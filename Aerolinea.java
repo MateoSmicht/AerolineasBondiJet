@@ -37,6 +37,9 @@ public class Aerolinea {
 			 clientes.put(dni, clienteNuevo);
 			 System.out.println("registrado " + clienteNuevo.getDni());
 		 }
-}	 
+}
+	 String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, double[] precios, int[] cantAsientos) {
+		 
+	 }
 
 }

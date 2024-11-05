@@ -6,5 +6,12 @@ public abstract class Vuelo {
     protected Aeropuerto aeropuertoDestino;
     protected String horaSalida;
     protected String horaDestino;
-    protected boolean estadoActivo;
+    
+    public Vuelo(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String horaSalida, String horaDestino) {
+    	this.identificacion = identificacion;
+    	this.aeropuertoSalida = aeropuertoSalida;
+    	this.aeropuertoDestino = aeropuertoDestino;
+    	this.horaSalida = horaSalida;
+    	this.horaDestino = horaDestino;
+    }
 }

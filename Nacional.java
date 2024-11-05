@@ -1,19 +1,9 @@
 package bondiJet;
 
 public class Nacional extends Publico {
-	public Nacional(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String horaSalida, String horaDestino, int cantidadAsientos, int cantidadTripulantes) {
-        this.identificacion = identificacion;
-        this.aeropuertoSalida = aeropuertoSalida;
-        this.aeropuertoDestino = aeropuertoDestino;
-        this.horaSalida = horaSalida;
-        this.horaDestino = horaDestino;
-        this.cantidadAsientos = cantidadAsientos;
-        this.cantidadTripulantes = cantidadTripulantes;
-        this.clientes = new LinckedList<>();
-        this.pasajesConNumeroAsiento = new LinckedList<>();
-        this.secciones = new LinckedList<>();
-        this.estadoActivo = false;
-        
-        
-    }
+	private int refrigerio;
+	public Nacional (int refrigerio, String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String horaSalida, String horaDestino,int cantidadAsientos, int cantidadTripulantes, int seccion) {
+	super(horaDestino, aeropuertoDestino, aeropuertoDestino, horaDestino, horaDestino, cantidadAsientos, cantidadTripulantes, seccion);
+	this.refrigerio= 1;
+}
 }
