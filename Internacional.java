@@ -1,24 +1,33 @@
 package bondiJet;
 
-public class Internacional extends Publico {
-	private boolean vueloTieneEscala;
-    private List<Aeropuerto> listaEscala;
-    private int cantidadRefrigerios;
+import java.util.HashMap;
 
-    public Internacional(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String horaSalida, String horaDestino, boolean vueloTieneEscala, int cantidadAsientos, int cantidadTripulantes, int cantidadRefrigerios) {
-        this.identificacion = identificacion;
-        this.aeropuertoSalida = aeropuertoSalida;
-        this.aeropuertoDestino = aeropuertoDestino;
-        this.horaSalida = horaSalida;
-        this.horaDestino = horaDestino;
-        this.vueloTieneEscala = vueloTieneEscala;
-        this.cantidadAsientos = cantidadAsientos;
-        this.cantidadTripulantes = cantidadTripulantes;
-        this.cantidadRefrigerios = cantidadRefrigerios;
-        this.clientes = new ArrayList<>();
-        this.pasajesConNumeroAsiento = new ArrayList<>();
-        this.secciones = new ArrayList<>();
-        this.listaEscala = new ArrayList<>();
-        this.estadoActivo = true;
+public class Internacional extends Publico {
+    private String [] escalas;
+    private int cantidadRefrigerios;
+    private double valorRefrigerio;
+
+    public Internacional (int cantidadRefrigerios, double valorRefrigerio, String [] escalas,String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int [] cantidadAsientos, int cantidadTripulantes, double[] precio) {
+    	super( identificacion,  aeropuertoSalida,  aeropuertoDestino,  fecha,  cantidadAsientos,  cantidadTripulantes, precio);
+    	this.cantidadRefrigerios= cantidadRefrigerios;
+    	this.valorRefrigerio= valorRefrigerio;
+    	this.escalas = escalas;
     }
+    public boolean tieneEscala(String [] escalas) {
+    	if(escalas.length==0) {
+    		return false;
+    	}
+    	return true;
+    }
+    public boolean elVueloEsInternacional(HashMap<String, Aeropuerto> aeropuertos,String origen, String destino,int []cantAsientos, double [] precios) {
+		if (aeropuertos.get(destino).getPais().equals(aeropuertos.get(origen).getPais())) {
+			return false;
+		}else {
+			 if (cantAsientos.length == 3 && precios.length == 3 ) {
+					return true;
+			}else {
+				return false;
+			}
+	}	
+	}
 }
