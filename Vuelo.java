@@ -12,10 +12,5 @@ public abstract class Vuelo {
     	this.aeropuertoDestino = aeropuertoDestino;
     	this.fecha = fecha;
     }
-    public String GenerarCodigoVuelo(int tamañoDeHashMapVuelos, String publicoOprivado) {
-    	StringBuilder codigoVuelo = new StringBuilder();
-    	codigoVuelo.append(tamañoDeHashMapVuelos+1).append(publicoOprivado);
-    	String resultado = codigoVuelo.toString();
-    	return resultado;
-    	}
+    
 }

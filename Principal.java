@@ -127,5 +127,6 @@ public class Principal {
         // Mostrar el estado general del sistema
         System.out.println("\nEstado general del sistema:");
         System.out.println(aerolinea);	
+      
     }
 }

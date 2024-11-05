@@ -7,30 +7,28 @@ import java.util.Map;
 public class Aerolinea {
 	public String nombreAerolinea;
 	public String cuit;
-	public LinkedList<Aeropuerto> aeropuertos;
+	public Map<String,Aeropuerto> aeropuertos;
 	private Aeropuerto aeropuerto;
 	private Publico publico;
+	private Nacional nacional;
 	private Map<Integer, Cliente> clientes;
 	private Map<String, Nacional> vuelosPublicosNacional;
 	
 	public Aerolinea(String nombreAerolinea, String cuit) {
 		this.nombreAerolinea= nombreAerolinea;
 		this.cuit= cuit;
-		this.aeropuertos = new LinkedList<>();
+		this.aeropuertos = new HashMap<>();
 		this.clientes = new HashMap<>();
 		this.vuelosPublicosNacional = new HashMap<>();
 	}
 	
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
-		Aeropuerto aeropuertoNuevo= new Aeropuerto(nombreAeropuerto, pais,provincia,direccion);
-		boolean existe = false;
-		for (Aeropuerto aeropuerto: aeropuertos) {
-			existe = existe || aeropuerto.getNombre().equals(aeropuertoNuevo.getNombre());
-		}if (existe==true) {
-			throw new RuntimeException("el aeropuerto ya existe");
-		}else {
-		aeropuertos.add(aeropuertoNuevo);
-		}
+		if (aeropuertos.containsKey(nombreAeropuerto)){
+			 throw new RuntimeException("El aeropuerto ya existe en el sistema " );
+		 }else {
+			 Aeropuerto aeropuertoNuevo= new Aeropuerto(nombreAeropuerto, pais,provincia,direccion);
+			 aeropuertos.put(nombreAeropuerto, aeropuertoNuevo);
+		 }
 	}
 	 public void registrarCliente(int dni, String nombre,String telefono) {
 		 
@@ -42,18 +40,28 @@ public class Aerolinea {
 		 }
 }
 	 public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, double[] precios, int[] cantAsientos) {
-		 
-				int cantidadDeVuelosPublicos= vuelosPublicosNacional.size();
-				String codigoVuelo=publico.GenerarCodigoVuelo(cantidadDeVuelosPublicos+1, "-PUB");
-				Nacional nuevoVueloPubNacional= new Nacional(valorRefrigerio,codigoVuelo,aeropuerto.getAeropuerto(aeropuertos, origen),
-						aeropuerto.getAeropuerto(aeropuertos, destino), fecha, cantAsientos, tripulantes, precios );
-				System.out.println(codigoVuelo);
-				if(vuelosPublicosNacional.containsKey(codigoVuelo)) {
-					throw new RuntimeException("el vuelo ya esta registrado");
-				}else {
-				vuelosPublicosNacional.put(codigoVuelo, nuevoVueloPubNacional);
-				return codigoVuelo;
-				}
+		 	int cantidadDeVuelosNacionales= vuelosPublicosNacional.size();
+		 	 	//GENERAMOS EL CODIGO DEL VUELO PUBLICO
+				String numeroString = Integer.toString(cantidadDeVuelosNacionales+1);
+		    	StringBuilder codigoVuelo = new StringBuilder();
+		    	codigoVuelo.append("{").append(numeroString).append("}").append("-PUB");
+		    	String codigo = codigoVuelo.toString();
+		    	if (cantAsientos.length != 2 && precios.length != 2 ) {
+		    		throw new RuntimeException("Los vuelos publicos nacionales tiene 2 secciones" );
+		    	}
+		    	if (aeropuertos.get(destino).getPais().equals("Argentina") && aeropuertos.get(origen).getPais().equals("Argentina")) {
+		    		
+		    	if (vuelosPublicosNacional.containsKey(codigo)) {
+		    		throw new RuntimeException("El vuelo ya esta registrado" ); //Si el vuelo ya existe sale una excepcion
+				 }else {
+				Nacional nuevoVueloPubNacional= new Nacional(valorRefrigerio,codigo,aeropuertos.get(origen),
+						aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios );
+				vuelosPublicosNacional.put(codigo, nuevoVueloPubNacional);
+				return codigo;
 			}	
-	
+		    	} else {
+		    		throw new RuntimeException("El vuelo no es nacional" ); 
+		    	}
+	 }
 }
+	 

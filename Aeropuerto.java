@@ -1,6 +1,7 @@
 package bondiJet;
 
-import java.util.LinkedList;
+import java.util.HashMap;
+
 
 public class Aeropuerto {
 	private String nombre;
@@ -14,25 +15,19 @@ public class Aeropuerto {
 		this.provincia= provincia;
 		this.direccion= direccion;
 	}
-	public boolean EstaRegistradoElAeropuerto(LinkedList<Aeropuerto> aeropuertos, String nombreAeropuerto) {
-		for(Aeropuerto aeropuerto: aeropuertos) {
-			if (aeropuerto.getNombre().equals(nombreAeropuerto)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean estaRegistradoElAeropuerto(HashMap<String,Aeropuerto> aeropuertos, String nombreAeropuerto) {
+		return aeropuertos.containsKey(nombreAeropuerto);
 	}
+	
 	public String getNombre() {
 		return this.nombre;
 	}
-	
-	public Aeropuerto getAeropuerto(LinkedList<Aeropuerto> aeropuertos, String nombreAeropuerto) {
-		for(Aeropuerto aeropuerto: aeropuertos) {
-			if (aeropuerto.getNombre().equals(nombreAeropuerto)) {
-				return aeropuerto;
-			}
-		}
-		return null;
+	public String getPais() {
+		return this.pais;
 	}
- 
+	
+	
 }
+ 
+
+
