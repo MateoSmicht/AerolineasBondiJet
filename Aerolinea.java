@@ -11,6 +11,7 @@ public class Aerolinea {
 	private Map<Integer, Cliente> clientes;
 	private Map<String, Nacional> vuelosPublicosNacional;
 	private Map<String, Internacional> vuelosPublicosInternacionales;
+	private Map<String, Privado> vuelosPrivados;
 
 	
 	public Aerolinea(String nombreAerolinea, String cuit) {
@@ -20,6 +21,7 @@ public class Aerolinea {
 		this.clientes = new HashMap<>();
 		this.vuelosPublicosNacional = new HashMap<>();
 		this.vuelosPublicosInternacionales = new HashMap<>();
+		this.vuelosPrivados = new HashMap<>();
 	}
 	
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -54,7 +56,7 @@ public class Aerolinea {
 			}	
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, 
 				int cantRefrigerios, double[] precios,  int[] cantAsientos,  String[] escalas) {
-		int cantidadDeVuelosInternacionales= vuelosPublicosNacional.size();
+		int cantidadDeVuelosInternacionales= vuelosPublicosInternacionales.size();
 	 	// Crea una instancia temporal de Nacional para generar el código de vuelo Nacional 
 	 	Internacional tempInternacional = new Internacional(cantRefrigerios, valorRefrigerio,  escalas, "",  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha, cantAsientos,  tripulantes, precios);
 	 	String codigo = tempInternacional.generarCodigoVuelo(cantidadDeVuelosInternacionales);
@@ -65,7 +67,12 @@ public class Aerolinea {
 		vuelosPublicosInternacionales.put(codigo, nuevoVueloPubInternacional);
 		return codigo;
 	}
-	 
+	//public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,  int dniComprador, int[] acompaniantes) {
+		//int cantidadDeVuelosPrivados= vuelosPrivados.size();
+	 	// Crea una instancia temporal de Nacional para generar el código de vuelo Nacional 
+	 	//Internacional tempInternacional = new Internacional(cantRefrigerios, valorRefrigerio,  escalas, "",  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha, cantAsientos,  tripulantes, precios);
+	 //	String codigo = tempInternacional.generarCodigoVuelo(cantidadDeVuelosInternacionales);
+//	}
 }//end
 	
 

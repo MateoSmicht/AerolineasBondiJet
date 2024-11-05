@@ -115,7 +115,7 @@ public class AerolineaTest {
 				12345678, acompaniantes);
 		assertNotNull(codVuelo);
 		assertTrue(codVuelo.endsWith("-PRI"));
-	}
+	} 
 
 	@Test
 	public void ej07_asientosDisponibles_vueloExistente_asientosDisponibles() {
