@@ -5,15 +5,23 @@ import java.util.Map;
 
 public abstract class Publico extends Vuelo {
 	protected int cantidadAsientos;
-    protected int cantidadTripulantes;
+    protected int [] cantidadTripulantes;
     protected Map<Integer, Pasaje> pasajes;
-    protected int seccion;
+    protected double [] precio;
     
-    public Publico(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String horaSalida, String horaDestino,int cantidadAsientos, int cantidadTripulantes, int seccion) {
-    	super(identificacion, aeropuertoSalida, aeropuertoDestino, horaSalida, horaDestino);
+    public Publico(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int cantidadAsientos, int[] cantidadTripulantes, double[] precio) {
+    	super(identificacion, aeropuertoSalida, aeropuertoDestino, fecha);
     	this.cantidadAsientos= cantidadAsientos;
     	this.cantidadTripulantes= cantidadTripulantes;
-    	this.seccion= seccion;
+    	this.precio= precio;
     	this.pasajes = new HashMap<>();
     }
-}
+    @Override
+    public String GenerarCodigoVuelo(int tamañoDeHashMapVuelos, String publicoOprivado) {
+    	StringBuilder codigoVuelo = new StringBuilder();
+    	codigoVuelo.append(tamañoDeHashMapVuelos).append("-PUB");
+    	String resultado = codigoVuelo.toString();
+    	return resultado;
+    	}
+    }
+

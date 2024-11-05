@@ -1,5 +1,7 @@
 package bondiJet;
 
+import java.util.LinkedList;
+
 public class Aeropuerto {
 	private String nombre;
 	private String pais;
@@ -12,9 +14,25 @@ public class Aeropuerto {
 		this.provincia= provincia;
 		this.direccion= direccion;
 	}
-	
+	public boolean EstaRegistradoElAeropuerto(LinkedList<Aeropuerto> aeropuertos, String nombreAeropuerto) {
+		for(Aeropuerto aeropuerto: aeropuertos) {
+			if (aeropuerto.getNombre().equals(nombreAeropuerto)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public String getNombre() {
 		return this.nombre;
+	}
+	
+	public Aeropuerto getAeropuerto(LinkedList<Aeropuerto> aeropuertos, String nombreAeropuerto) {
+		for(Aeropuerto aeropuerto: aeropuertos) {
+			if (aeropuerto.getNombre().equals(nombreAeropuerto)) {
+				return aeropuerto;
+			}
+		}
+		return null;
 	}
  
 }
