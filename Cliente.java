@@ -10,5 +10,8 @@ public class Cliente {
 		this.nombre= nombre;
 		this.telefeno= telefono;
 	}
-
+	
+	public int getDni() {
+		return this.dni;
+	}
 }
