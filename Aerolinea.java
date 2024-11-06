@@ -12,6 +12,7 @@ public class Aerolinea {
 	private Map<String, Nacional> vuelosPublicosNacional;
 	private Map<String, Internacional> vuelosPublicosInternacionales;
 	private Map<String, Privado> vuelosPrivados;
+	private Privado privado;
 
 	
 	public Aerolinea(String nombreAerolinea, String cuit) {
@@ -61,18 +62,23 @@ public class Aerolinea {
 	 	Internacional tempInternacional = new Internacional(cantRefrigerios, valorRefrigerio,  escalas, "",  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha, cantAsientos,  tripulantes, precios);
 	 	String codigo = tempInternacional.generarCodigoVuelo(cantidadDeVuelosInternacionales);
 	 	if(tempInternacional.elVueloEsInternacional(aeropuertos, origen, destino, cantAsientos, precios)==false) {
-	 		throw new RuntimeException("El vuelo no es nacional" );
+	 		throw new RuntimeException("El vuelo no es internacional" );
 	 	}
 	 	Internacional nuevoVueloPubInternacional= new Internacional(cantRefrigerios, valorRefrigerio,  escalas, codigo,  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha, cantAsientos,  tripulantes, precios);
 		vuelosPublicosInternacionales.put(codigo, nuevoVueloPubInternacional);
 		return codigo;
 	}
-	//public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,  int dniComprador, int[] acompaniantes) {
-		//int cantidadDeVuelosPrivados= vuelosPrivados.size();
-	 	// Crea una instancia temporal de Nacional para generar el código de vuelo Nacional 
-	 	//Internacional tempInternacional = new Internacional(cantRefrigerios, valorRefrigerio,  escalas, "",  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha, cantAsientos,  tripulantes, precios);
-	 //	String codigo = tempInternacional.generarCodigoVuelo(cantidadDeVuelosInternacionales);
-//	}
+	public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,  int dniComprador, int[] acompaniantes) {
+		Privado tempPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, 0, "", aeropuertos.get(origen), aeropuertos.get(destino), fecha);
+		int cantidadDeVuelosPrivados= vuelosPrivados.size();
+	 	String codigoPriv = tempPrivado.generarCodigoVueloPriv(cantidadDeVuelosPrivados);
+	 	int jets= tempPrivado.calcularJetsNecesarios(acompaniantes);
+	 	double precioTotal = tempPrivado.calcularPrecioFinal(jets);
+	 	Privado nuevoVueloPrivado= new Privado( dniComprador ,  acompaniantes,  tripulantes,  precioTotal,  jets,  codigoPriv,  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha );
+	 	vuelosPrivados.put(codigoPriv, nuevoVueloPrivado);
+	 	return codigoPriv;
+	}
+	
 }//end
 	
 
