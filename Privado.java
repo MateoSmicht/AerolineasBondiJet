@@ -79,6 +79,13 @@ public class Privado extends Vuelo {
 		    // Comparar días si los meses y años son iguales
 		    return diaInt > diaActual;
 		}
+	    public int getCantidadJets() {
+	        return cantidadJets;
+	    }
+
+	    public double getPrecio() {
+	        return precio;
+	    }
 	    
 }
 

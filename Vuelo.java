@@ -13,4 +13,24 @@ public abstract class Vuelo {
     	this.fecha = fecha;
     }
     
+ // Getters
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public Aeropuerto getAeropuertoSalida() {
+        return aeropuertoSalida;
+    }
+
+    public Aeropuerto getAeropuertoDestino() {
+        return aeropuertoDestino;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+    
+   
 }
+    
+

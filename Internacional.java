@@ -30,4 +30,11 @@ public class Internacional extends Publico {
 			}
 	}	
 	}
+    public int getCantidadRefrigerios() {
+        return cantidadRefrigerios;
+    }
+
+    public double getValorRefrigerio() {
+        return valorRefrigerio;
+    }
 }
