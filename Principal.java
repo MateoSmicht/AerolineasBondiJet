@@ -7,7 +7,7 @@ public class Principal {
 	public static void main(String[] args) {
 		
         // Crear la Aerolínea
-        IAerolinea aerolinea = new Aerolinea("BondiJet", "30-12345678-9");
+        IAerolinea aerolinea =  new Aerolinea("BondiJet", "30-12345678-9");
         
 
         // Mostrar el estado general del sistema

@@ -2,14 +2,13 @@ package bondiJet;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Aerolinea {
+public class Aerolinea implements IAerolinea {
 	public String nombreAerolinea;
 	public String cuit;
 	public HashMap<String,Aeropuerto> aeropuertos;
@@ -21,6 +20,7 @@ public class Aerolinea {
 	private Map<Integer, Pasaje> pasajes;
 	
 
+	
 	
 	public Aerolinea(String nombreAerolinea, String cuit) {
 		this.nombreAerolinea= nombreAerolinea;
@@ -298,8 +298,28 @@ public class Aerolinea {
 
 	    throw new RuntimeException("Vuelo no encontrado para el código proporcionado: " + codVuelo);
 	}
-}//end
 	
+	public String toString() { 
+		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit; 
+		}
+	;
+
+	    // Método para cancelar un pasaje
+	    public void cancelarPasaje(int dni, String codVuelo, int nroAsiento) {
+	        Cliente cliente = clientes.get(dni);
+	        if (cliente == null) {
+	            throw new RuntimeException("El cliente no está registrado.");
+	        }
+
+	        Vuelo v = vuelos.get(codVuelo);
+	        if (v == null) {
+	            throw new RuntimeException("El vuelo no existe.");
+	        }
+	            pasajes.remove(nroAsiento);
+	    }
+	
+}//end
+
 
 
 	 
