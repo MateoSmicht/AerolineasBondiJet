@@ -9,6 +9,11 @@ public class Nacional extends Publico {
 	super( identificacion,  aeropuertoSalida,  aeropuertoDestino,  fecha,  cantidadAsientos,  cantidadTripulantes, precio);
 	this.refrigerio= refrigerio;
 }
+	@Override
+	public double valorPasaje(int seccionAsiento) {
+		double costo= (super.valorPasaje(seccionAsiento)+this.refrigerio) * 0.20; //agregamos el %20 de impuertos
+    	return costo;
+    }
 	
 	public boolean elVueloEsNacional(HashMap<String, Aeropuerto> aeropuertos,String origen, String destino,int []cantAsientos, double [] precios) {
 		if (aeropuertos.get(destino).getPais().equals("Argentina") && aeropuertos.get(origen).getPais().equals("Argentina")) {
@@ -20,4 +25,9 @@ public class Nacional extends Publico {
 	}
 		return false;
 	}
+	 @Override
+	    public String verDatos() {
+	    	return super.verDatos() + ", valor refrigerio:"+this.refrigerio;
+	    }
+	    
 }

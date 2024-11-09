@@ -80,10 +80,13 @@ public class Aerolinea implements IAerolinea {
 		return codigo;
 	}
 	public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,  int dniComprador, int[] acompaniantes) {
-		
 		Privado tempPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, 0, "", aeropuertos.get(origen), aeropuertos.get(destino), fecha);
+		 boolean Posterior = Vuelo.esFechaPosterior(fecha);
+	        if (!Posterior) {
+	        	throw new RuntimeException("la fecha no es valida.");
+	        } 
 		int cantidadDeVuelosPrivados= vuelos.size();
-	 	String codigoPriv = tempPrivado.generarCodigoVueloPriv(cantidadDeVuelosPrivados);
+	 	String codigoPriv = tempPrivado.generarCodigoVuelo(cantidadDeVuelosPrivados);
 	 	int jets= tempPrivado.calcularJetsNecesarios(acompaniantes);
 	 	double precioTotal = tempPrivado.calcularPrecioFinal(jets);
 	 	Privado nuevoVueloPrivado= new Privado( dniComprador ,  acompaniantes,  tripulantes,  precioTotal,  jets,  codigoPriv,  aeropuertos.get(origen),  aeropuertos.get(destino),  fecha );
@@ -265,39 +268,34 @@ public class Aerolinea implements IAerolinea {
 
 	
 	public String detalleDeVuelo(String codVuelo) {
-	    // Verificar si el vuelo es nacional
+	    StringBuilder detalle = new StringBuilder();
 	    Publico vueloNacional = vuelosPublicosNacional.get(codVuelo);
 	    if (vueloNacional != null) {
-	        return String.format("%s - %s - %s - %s - NACIONAL",
-	                codVuelo,
-	                vueloNacional.getAeropuertoSalida().getNombre(),
-	                vueloNacional.getAeropuertoDestino().getNombre(),
-	                vueloNacional.getFecha());
+	        detalle.append(codVuelo).append(" - ")
+	               .append(vueloNacional.getAeropuertoSalida().getNombre()).append(" - ")
+	               .append(vueloNacional.getAeropuertoDestino().getNombre()).append(" - ")
+	               .append(vueloNacional.getFecha()).append(" - NACIONAL");
+	        return detalle.toString();
 	    }
-
-	    // Verificar si el vuelo es internacional
 	    Publico vueloInternacional = vuelosPublicosInternacionales.get(codVuelo);
 	    if (vueloInternacional != null) {
-	        return String.format("%s - %s - %s - %s - INTERNACIONAL",
-	                codVuelo,
-	                vueloInternacional.getAeropuertoSalida().getNombre(),
-	                vueloInternacional.getAeropuertoDestino().getNombre(),
-	                vueloInternacional.getFecha());
+	        detalle.append(codVuelo).append(" - ").append(vueloInternacional.getAeropuertoSalida().getNombre()).append(" - ")
+	       .append(vueloInternacional.getAeropuertoDestino().getNombre()).append(" - ")
+	       	.append(vueloInternacional.getFecha()).append(" - INTERNACIONAL");
+	        return detalle.toString();
 	    }
-
-	    // Verificar si el vuelo es privado
 	    Privado vueloPrivado = vuelosPrivados.get(codVuelo);
 	    if (vueloPrivado != null) {
-	        return String.format("%s - %s - %s - %s - PRIVADO (%d)",
-	                codVuelo,
-	                vueloPrivado.getAeropuertoSalida().getNombre(),
-	                vueloPrivado.getAeropuertoDestino().getNombre(),
-	                vueloPrivado.getFecha(),
-	                vueloPrivado.getCantidadJets());
+	        detalle.append(codVuelo).append(" - ")
+	               .append(vueloPrivado.getAeropuertoSalida().getNombre()).append(" - ")
+	               .append(vueloPrivado.getAeropuertoDestino().getNombre()).append(" - ")
+	               .append(vueloPrivado.getFecha()).append(" - PRIVADO (")
+	               .append(vueloPrivado.getCantidadJets()).append(")");
+	        return detalle.toString();
 	    }
-
 	    throw new RuntimeException("Vuelo no encontrado para el código proporcionado: " + codVuelo);
 	}
+
 	
 	public String toString() { 
 		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit; 
@@ -317,6 +315,12 @@ public class Aerolinea implements IAerolinea {
 	        }
 	            pasajes.remove(nroAsiento);
 	    }
+
+		@Override
+		public void cancelarPasaje(int dni, int codPasaje) {
+			// TODO Auto-generated method stub
+			
+		}
 	
 }//end
 

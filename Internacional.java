@@ -13,6 +13,13 @@ public class Internacional extends Publico {
     	this.valorRefrigerio= valorRefrigerio;
     	this.escalas = escalas;
     }
+    @Override
+	public double valorPasaje(int seccionAsiento) {
+    	double refrigerio=this.valorRefrigerio * this.cantidadRefrigerios;
+		double costo= (super.valorPasaje(seccionAsiento)+refrigerio) * 0.20;//agregamos el %20 de impuertos
+    	return costo;
+    }
+    
     public boolean tieneEscala(String [] escalas) {
     	if(escalas.length==0) {
     		return false;
@@ -36,5 +43,9 @@ public class Internacional extends Publico {
 
     public double getValorRefrigerio() {
         return valorRefrigerio;
+    }
+    @Override
+    public String verDatos() {
+    	return super.verDatos() +", cantidad refrigerios:"+ this.cantidadRefrigerios+ ", valor refrigerio:"+this.valorRefrigerio+ ", escalas:" + this.escalas;
     }
 }

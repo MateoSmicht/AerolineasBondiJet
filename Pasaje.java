@@ -22,7 +22,7 @@ public class Pasaje {
         this.cliente = cliente;
         this.seccionAsiento = seccionAsiento;
     }
-
+    
     // Getters
     public Cliente getCliente() {
         return cliente;
