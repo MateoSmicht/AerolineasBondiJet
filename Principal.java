@@ -94,7 +94,7 @@ public class Principal {
         }
 
         // El cliente compra un vuelo privado de Aeroparque a Bariloche para 40 personas
-        String fechaVueloPrivado = "10/11/2024";
+        String fechaVueloPrivado = "11/11/2024";
         double precioVueloPrivado = 500000.0;
 
         // Vender el vuelo privado

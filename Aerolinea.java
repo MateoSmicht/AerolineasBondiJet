@@ -18,6 +18,7 @@ public class Aerolinea implements IAerolinea {
 	private Map<String, Privado> vuelosPrivados;
 	private Map<String, Vuelo> vuelos; // Mapa para todos los vuelo
 	private Map<Integer, Pasaje> pasajes;
+	private Publico publico;
 	
 
 	
@@ -32,6 +33,7 @@ public class Aerolinea implements IAerolinea {
 		this.vuelosPrivados = new HashMap<>();
 		this.vuelos = new HashMap<>();
 		this.pasajes = new HashMap<>();
+		this.publico= publico;
 	}
 	
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -99,49 +101,14 @@ public class Aerolinea implements IAerolinea {
 	    if (!clientes.containsKey(dniCliente)) {
 	        throw new RuntimeException("El cliente no está registrado.");
 	    }
-
-	    // Buscar el vuelo en el mapa de vuelos públicos nacionales y internacionales
 	    Publico vuelo = (Publico) vuelos.get(codVuelo);
-	    if (vuelo == null) {
-	        throw new RuntimeException("Vuelo no encontrado.");
-	    }
-	 
-
-	    // Verificar si el asiento está disponible
-	    if (vuelo.pasajes.containsKey(nroAsiento)) {
-	        throw new RuntimeException("El asiento ya está ocupado.");
-	    }
-	    //seccion del vuelo
-	    
-	    // Registrar el pasaje
-	    int codigoPasaje=pasajes.size()+1;
-	    Pasaje nuevoPasaje = new Pasaje(nroAsiento, vuelo, clientes.get(dniCliente));
-	    vuelo.pasajes.put(nroAsiento, nuevoPasaje);
-
-	    // Generar y devolver un código único de pasaje (puede ser el número del asiento o un contador)
-	    return codigoPasaje;
+	    //vende el pasaje
+	    return vuelo.venderPasajePublico(clientes.get(dniCliente), vuelo, nroAsiento, aOcupar);
 	}
 	public Map<Integer, String> asientosDisponibles(String codVuelo) {
 	    // Buscar el vuelo en el mapa de vuelos públicos nacionales
 	    Publico vuelo = (Publico) vuelos.get(codVuelo);
-	    if (vuelo == null) {
-	        throw new RuntimeException("Vuelo no encontrado: " + codVuelo);
-	    }
-
-	    Map<Integer, String> asientosDisponibles = new HashMap<>();
-	    int asientoNumero = 1;
-
-	    // Añadir asientos de clase Turista
-	    for (int i = 0; i < vuelo.cantidadAsientos[0]; i++) {
-	        asientosDisponibles.put(asientoNumero++, "Turista");
-	    }
-
-	    // Añadir asientos de clase Ejecutiva
-	    for (int i = 0; i < vuelo.cantidadAsientos[1]; i++) {
-	        asientosDisponibles.put(asientoNumero++, "Ejecutiva");
-	    }
-
-	    return asientosDisponibles;
+	    return vuelo.asientosDisponiblesPublico(vuelo);
 	}
 	public List<String> consultarVuelosSimilares(String origen, String destino, String fecha) {
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -165,69 +132,7 @@ public class Aerolinea implements IAerolinea {
 
 	    return vuelosSimilares;
 	}
-	public List<String> cancelarVuelo(String codVuelo) {
-	    List<String> registros = new ArrayList<>();
-
-	    // Obtener el vuelo a cancelar
-	    Publico vueloACancelar = vuelosPublicosNacional.get(codVuelo);
-	    if (vueloACancelar == null) {
-	        throw new RuntimeException("Vuelo no encontrado para cancelar: " + codVuelo);
-	    }
-
-	    // Encontrar un vuelo alternativo similar (misma ruta y fecha posterior)
-	    Publico vueloAlternativo = null;
-	    LocalDate fechaVueloACancelar = LocalDate.parse(vueloACancelar.getFecha(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-	    for (Publico vuelo : vuelosPublicosNacional.values()) {
-	        if (!vuelo.getIdentificacion().equals(codVuelo) &&
-	            vuelo.getAeropuertoSalida().getNombre().equals(vueloACancelar.getAeropuertoSalida().getNombre()) &&
-	            vuelo.getAeropuertoDestino().getNombre().equals(vueloACancelar.getAeropuertoDestino().getNombre())) {
-	            
-	            LocalDate fechaVueloAlternativo = LocalDate.parse(vuelo.getFecha(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	            if (fechaVueloAlternativo.isAfter(fechaVueloACancelar)) {
-	                vueloAlternativo = vuelo;
-	                break;
-	            }
-	        }
-	    }
-
-	    if (vueloAlternativo == null) {
-	        throw new RuntimeException("No se encontró un vuelo alternativo para reubicar a los pasajeros.");
-	    }
-
-	    // Reubicar pasajeros en el vuelo alternativo
-	    for (Pasaje pasaje : vueloACancelar.pasajes.values()) {
-	        Cliente cliente = pasaje.getCliente();
-	        int asientoNuevo = buscarAsientoDisponible(vueloAlternativo, pasaje.getSeccionASiento());
-	        
-	        if (asientoNuevo != -1) {
-	            // Registrar el nuevo pasaje para el cliente en el vuelo alternativo
-	            Pasaje nuevoPasaje = new Pasaje(asientoNuevo, vueloAlternativo, cliente);
-	            vueloAlternativo.pasajes.put(asientoNuevo, nuevoPasaje);
-
-	            // Generar el registro de reubicación
-	            String registro = String.format("%d - %s - %s - %s", cliente.getDni(), cliente.getNombre(), cliente.getTelefono(), vueloAlternativo.getIdentificacion());
-	            registros.add(registro);
-	        }
-	    }
-
-	    // Eliminar el vuelo original después de reubicar a los pasajeros
-	    vuelosPublicosNacional.remove(codVuelo);
-
-	    return registros;
-	}
 	
-	private int buscarAsientoDisponible(Publico vuelo, int seccionOriginal) {
-	    // Asumimos que clase Turista es 0 y Ejecutiva es 1 (con Ejecutiva siendo mejor)
-	    for (int seccion = seccionOriginal; seccion < vuelo.cantidadAsientos.length; seccion++) {
-	        for (int asiento = 1; asiento <= vuelo.cantidadAsientos[seccion]; asiento++) {
-	            if (!vuelo.pasajes.containsKey(asiento)) {
-	                return asiento;
-	            }
-	        }
-	    }
-	    return -1; // No se encontró asiento disponible
-	}
 
 	public double totalRecaudado(String destino) {
 	    double totalRecaudacion = 0.0;
@@ -295,31 +200,23 @@ public class Aerolinea implements IAerolinea {
 	    }
 	    throw new RuntimeException("Vuelo no encontrado para el código proporcionado: " + codVuelo);
 	}
-
+	public List<String> cancelarVuelo(String codVuelo) {
+		List<String> registros = new ArrayList<>();
+		Publico vueloCancelado = (Publico) vuelos.get(codVuelo);
+		Publico vueloAlternativo= (Publico) vueloCancelado.vueloAlternativoPublico(vueloCancelado, vuelos);
+		registros.add(vueloAlternativo.identificacion);
+		return registros;
+	}
 	
 	public String toString() { 
 		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit; 
 		}
 	;
 
-	    // Método para cancelar un pasaje
-	    public void cancelarPasaje(int dni, String codVuelo, int nroAsiento) {
-	        Cliente cliente = clientes.get(dni);
-	        if (cliente == null) {
-	            throw new RuntimeException("El cliente no está registrado.");
-	        }
-
-	        Vuelo v = vuelos.get(codVuelo);
-	        if (v == null) {
-	            throw new RuntimeException("El vuelo no existe.");
-	        }
-	            pasajes.remove(nroAsiento);
-	    }
-
-		@Override
-		public void cancelarPasaje(int dni, int codPasaje) {
-			// TODO Auto-generated method stub
-			
+		
+		public void cancelarPasaje(int dni, String codigoVuelo, int codPasaje) {
+			Publico v=(Publico) vuelos.get(codigoVuelo);
+			v.cancelarPasajePublico(dni, codPasaje, v);
 		}
 	
 }//end

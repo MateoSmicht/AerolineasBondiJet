@@ -7,20 +7,15 @@ public class Pasaje {
     private Vuelo vueloAsignado;
     private Cliente cliente;
     private int seccionAsiento; // Representa la sección del asiento (ej. 0 para Turista, 1 para Ejecutiva)
+    private boolean ocupadoAsiento;
 
     // Constructor
-    public Pasaje(int asientoAsignado, Vuelo vueloAsignado, Cliente cliente) {
-        this.asientoAsignado = asientoAsignado;
-        this.vueloAsignado = vueloAsignado;
-        this.cliente = cliente;
-        this.seccionAsiento = 0; // Inicialización predeterminada, si es necesario ajustarlo se puede modificar
-    }
-
-    public Pasaje(int asientoAsignado, Vuelo vueloAsignado, Cliente cliente, int seccionAsiento) {
+    public Pasaje(int asientoAsignado, Vuelo vueloAsignado, Cliente cliente, int seccionAsiento, boolean ocupadoAsiento) {
         this.asientoAsignado = asientoAsignado;
         this.vueloAsignado = vueloAsignado;
         this.cliente = cliente;
         this.seccionAsiento = seccionAsiento;
+        this.ocupadoAsiento = ocupadoAsiento;
     }
     
     // Getters

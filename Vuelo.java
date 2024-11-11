@@ -38,7 +38,7 @@ public class Vuelo {
         try {
             // Define el formato de la fecha
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            
+      
             // Convierte la cadena de fecha a un objeto LocalDate
             LocalDate fechaDada = LocalDate.parse(fecha, formatter);
             
