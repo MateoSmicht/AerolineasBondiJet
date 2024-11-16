@@ -54,17 +54,18 @@ public class Aerolinea implements IAerolinea {
 		 }
 }
 	 public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, double[] precios, int[] cantAsientos) {
-		 	int cantidadDeVuelosNacionales= vuelos.size();
+		 	int cantidadDeVuelos= vuelos.size();
 		 	// Crea una instancia temporal de Nacional para generar el código de vuelo Nacional 
-		 	Nacional tempNacional = new Nacional(valorRefrigerio, "", aeropuertos.get(origen), aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
-		 	String codigo = tempNacional.generarCodigoVuelo(cantidadDeVuelosNacionales);
-		 	if(tempNacional.elVueloEsNacional(aeropuertos, origen, destino, cantAsientos, precios)==false) {
+		 	Nacional nuevoVueloNacional= new Nacional(valorRefrigerio,"",aeropuertos.get(origen),
+					aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios );
+		 	String codigo = nuevoVueloNacional.generarCodigoVuelo(cantidadDeVuelos);
+		 	nuevoVueloNacional.setIdentificacion(codigo);
+		 	if(nuevoVueloNacional.elVueloEsNacional(aeropuertos, origen, destino, cantAsientos, precios)==false) {
 		 		throw new RuntimeException("El vuelo no es nacional" );
 		 	}
-				Nacional nuevoVueloPubNacional= new Nacional(valorRefrigerio,codigo,aeropuertos.get(origen),
-						aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios );
-				vuelosPublicosNacional.put(codigo, nuevoVueloPubNacional);
-				vuelos.put(codigo, nuevoVueloPubNacional);
+				
+				vuelosPublicosNacional.put(codigo, nuevoVueloNacional);
+				vuelos.put(codigo, nuevoVueloNacional);
 				return codigo;
 			}	
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, 

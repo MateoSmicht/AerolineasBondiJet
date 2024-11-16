@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 
 public class Vuelo {
 	protected String identificacion;
-    protected Aeropuerto aeropuertoSalida;
+	protected Aeropuerto aeropuertoSalida;
     protected Aeropuerto aeropuertoDestino;
     protected String fecha;
     
@@ -34,6 +34,9 @@ public class Vuelo {
     public String getFecha() {
         return fecha;
     }
+    public void setIdentificacion(String identificacion) {
+		this.identificacion = identificacion;
+	}
     public static boolean esFechaPosterior(String fecha) {
         try {
             // Define el formato de la fecha
