@@ -17,8 +17,6 @@ public class Aerolinea implements IAerolinea {
 	private Map<String, Internacional> vuelosPublicosInternacionales;
 	private Map<String, Privado> vuelosPrivados;
 	private Map<String, Vuelo> vuelos; // Mapa para todos los vuelo
-	private Map<Integer, Pasaje> pasajes;
-	private Publico publico;
 	
 
 	
@@ -32,8 +30,6 @@ public class Aerolinea implements IAerolinea {
 		this.vuelosPublicosInternacionales = new HashMap<>();
 		this.vuelosPrivados = new HashMap<>();
 		this.vuelos = new HashMap<>();
-		this.pasajes = new HashMap<>();
-		this.publico= publico;
 	}
 	
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -55,17 +51,18 @@ public class Aerolinea implements IAerolinea {
 }
 	 public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, double[] precios, int[] cantAsientos) {
 		 	int cantidadDeVuelos= vuelos.size();
-		 	// Crea una instancia temporal de Nacional para generar el código de vuelo Nacional 
 		 	Nacional nuevoVueloNacional= new Nacional(valorRefrigerio,"",aeropuertos.get(origen),
 					aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios );
+		 	//Generemos codigo de vuelo
 		 	String codigo = nuevoVueloNacional.generarCodigoVuelo(cantidadDeVuelos);
 		 	nuevoVueloNacional.setIdentificacion(codigo);
+		 	//Comprobamos si el vuelo es nacional
 		 	if(nuevoVueloNacional.elVueloEsNacional(aeropuertos, origen, destino, cantAsientos, precios)==false) {
 		 		throw new RuntimeException("El vuelo no es nacional" );
 		 	}
-				
-				vuelosPublicosNacional.put(codigo, nuevoVueloNacional);
-				vuelos.put(codigo, nuevoVueloNacional);
+		 	//Almacenamos los vuelos en las tablas hash
+			vuelosPublicosNacional.put(codigo, nuevoVueloNacional);
+			vuelos.put(codigo, nuevoVueloNacional);
 				return codigo;
 			}	
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes, double valorRefrigerio, 
