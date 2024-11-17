@@ -5,14 +5,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Vuelo {
-	protected int identificacion;
+	protected String identificacion;
 	protected Aeropuerto aeropuertoSalida;
     protected Aeropuerto aeropuertoDestino;
     protected String fecha;
     
     
-    public Vuelo(int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha) {
-    	this.identificacion = identificacion;
+    public Vuelo(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha) {
+    	this.identificacion = this.generarCodigoVuelo(identificacion);
     	this.aeropuertoSalida = aeropuertoSalida;
     	this.aeropuertoDestino = aeropuertoDestino;
     	this.fecha = fecha;
@@ -29,7 +29,7 @@ public class Vuelo {
     	return new Vuelo (this.identificacion, this.aeropuertoSalida, this.aeropuertoDestino, this.fecha);
     }
  // Getters
-    public int getIdentificacion() {
+    public String getIdentificacion() {
         return identificacion;
     }
 
@@ -63,10 +63,10 @@ public class Vuelo {
             return false;
         }
     }
-    public String generarCodigoVuelo(int tamañoDeHashMapVuelos) {
-    	String numeroString = Integer.toString(tamañoDeHashMapVuelos+1);
+    
+    public String generarCodigoVuelo(String tamañoDeHashMapVuelos) {
     	StringBuilder codigoVuelo = new StringBuilder();
-    	codigoVuelo.append("{").append(numeroString).append("}");
+    	codigoVuelo.append("{").append(tamañoDeHashMapVuelos).append("}");
     	String resultado = codigoVuelo.toString();
     	return resultado;
     	}

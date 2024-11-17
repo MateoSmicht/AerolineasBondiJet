@@ -13,7 +13,7 @@ public class Publico extends Vuelo {
 	protected Map<Integer, Pasaje> pasajes;
 	protected double[] precio;
 
-	public Publico(int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha,
+	public Publico(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha,
 			int[] cantidadAsientos, int cantidadTripulantes, double[] precio) {
 		super(identificacion, aeropuertoSalida, aeropuertoDestino, fecha);
 		this.cantidadAsientos = cantidadAsientos;
@@ -195,7 +195,7 @@ public class Publico extends Vuelo {
 	}
 
 	@Override
-	public String generarCodigoVuelo(int tamañoDeHashMapVuelos) {
+	public String generarCodigoVuelo(String tamañoDeHashMapVuelos) {
 		StringBuilder codigoVuelo = new StringBuilder();
 		codigoVuelo.append(super.generarCodigoVuelo(tamañoDeHashMapVuelos)).append("-PUB");
 		String resultado = codigoVuelo.toString();

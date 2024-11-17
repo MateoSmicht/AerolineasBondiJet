@@ -7,7 +7,7 @@ public class Internacional extends Publico {
     private int cantidadRefrigerios;
     private double valorRefrigerio;
 
-    public Internacional (int cantidadRefrigerios, double valorRefrigerio, String [] escalas,int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int [] cantidadAsientos, int cantidadTripulantes, double[] precio) {
+    public Internacional (int cantidadRefrigerios, double valorRefrigerio, String [] escalas,String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int [] cantidadAsientos, int cantidadTripulantes, double[] precio) {
     	super( identificacion,  aeropuertoSalida,  aeropuertoDestino,  fecha,  cantidadAsientos,  cantidadTripulantes, precio);
     	this.cantidadRefrigerios= cantidadRefrigerios;
     	this.valorRefrigerio= valorRefrigerio;

@@ -6,7 +6,7 @@ public class Privado extends Vuelo {
 	private int tripulantes;
 	private double precio;
 	private int cantidadJets;
-	public Privado(int dniComprador , int [] acompaniantes, int tripulantes, double precio, int cantidadJets, int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto  aeropuertoDestino, String fecha ) {
+	public Privado(int dniComprador , int [] acompaniantes, int tripulantes, double precio, int cantidadJets, String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto  aeropuertoDestino, String fecha ) {
 	super(identificacion,  aeropuertoSalida,  aeropuertoDestino, fecha);
 		this.dniComprador= dniComprador;
 		this.acompaniantes= acompaniantes;
@@ -16,7 +16,7 @@ public class Privado extends Vuelo {
 	}
 	
 	@Override
-	public String generarCodigoVuelo(int tamañoDeHashMapVuelos) {
+	public String generarCodigoVuelo(String tamañoDeHashMapVuelos) {
     	StringBuilder codigoVuelo = new StringBuilder();
     	codigoVuelo.append(super.generarCodigoVuelo(tamañoDeHashMapVuelos)).append("-PRI");
     	String resultado = codigoVuelo.toString();

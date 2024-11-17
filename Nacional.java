@@ -5,18 +5,13 @@ import java.util.HashMap;
 public class Nacional extends Publico {
 	private double refrigerio;
 
-	public Nacional(double refrigerio, int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino,
+	public Nacional(double refrigerio, String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino,
 			String fecha, int[] cantidadAsientos, int cantidadTripulantes, double[] precio) {
 		super(identificacion, aeropuertoSalida, aeropuertoDestino, fecha, cantidadAsientos, cantidadTripulantes,
 				precio);
 		this.refrigerio = refrigerio;
 	}
 
-	@Override
-	public Nacional crear() {
-		return new Nacional(this.refrigerio, this.identificacion, this.aeropuertoSalida, this.aeropuertoDestino,
-				this.fecha, this.cantidadAsientos, this.cantidadTripulantes, this.precio);
-	}
 
 	@Override
 	public double valorPasaje(int seccionAsiento) {

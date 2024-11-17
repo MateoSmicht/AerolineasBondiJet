@@ -13,20 +13,18 @@ public class Aerolinea implements IAerolinea {
 	public String cuit;
 	public HashMap<String, Aeropuerto> aeropuertos;
 	private Map<Integer, Cliente> clientes;
-	private Map<String, Nacional> vuelosPublicosNacional;
-	private Map<String, Internacional> vuelosPublicosInternacionales;
-	private Map<String, Privado> vuelosPrivados;
 	private Map<String, Vuelo> vuelos; // Mapa para todos los vuelo
+	private Map<String , Privado> vuelosPrivados;
+	private Map<String , Publico> vuelosPublicos;
 
 	public Aerolinea(String nombreAerolinea, String cuit) {
 		this.nombreAerolinea = nombreAerolinea;
 		this.cuit = cuit;
 		this.aeropuertos = new HashMap<>();
 		this.clientes = new HashMap<>();
-		this.vuelosPublicosNacional = new HashMap<>();
-		this.vuelosPublicosInternacionales = new HashMap<>();
-		this.vuelosPrivados = new HashMap<>();
 		this.vuelos = new HashMap<>();
+		this.vuelosPrivados = new HashMap<>();
+		this.vuelosPublicos= new HashMap<>();
 	}
 
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -50,7 +48,7 @@ public class Aerolinea implements IAerolinea {
 
 	public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, double[] precios, int[] cantAsientos) {
-		int cantidadDeVuelos = vuelos.size();
+		String cantidadDeVuelos = Integer.toString(vuelos.size()+1) ;
 		Nacional nuevoVueloNacional = new Nacional(valorRefrigerio,
 				cantidadDeVuelos, aeropuertos.get(origen),
 				aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
@@ -59,34 +57,35 @@ public class Aerolinea implements IAerolinea {
 			throw new RuntimeException("El vuelo no es nacional");
 		}
 		// Almacenamos los vuelos en las tablas hash
-		String codigo = nuevoVueloNacional.generarCodigoVuelo(cantidadDeVuelos);
-		vuelos.put(codigo, nuevoVueloNacional);
-		return codigo;
+		vuelosPublicos.put(nuevoVueloNacional.getIdentificacion(), nuevoVueloNacional);
+		vuelos.put(nuevoVueloNacional.getIdentificacion(), nuevoVueloNacional);
+		return nuevoVueloNacional.getIdentificacion();
 	}
 
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, int cantRefrigerios, double[] precios, int[] cantAsientos, String[] escalas) {
-		int cantidadDeVuelos = vuelos.size();
-		Internacional nuevoVueloPubInternacional = new Internacional(cantRefrigerios, valorRefrigerio, escalas, cantidadDeVuelos,
+		String codigo = Integer.toString(vuelos.size()+1)  ;
+		Internacional nuevoVueloPubInternacional = new Internacional(cantRefrigerios, valorRefrigerio, escalas, codigo,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
 		// Comprobamos si el vuelo es nacional
 		if (nuevoVueloPubInternacional.esUnVueloValido() == false) {
 			throw new RuntimeException("El vuelo no es internacional");
 		}
 		// Generemos codigo de vuelo
-		String codigo = nuevoVueloPubInternacional.generarCodigoVuelo(cantidadDeVuelos);
-		vuelos.put(codigo, nuevoVueloPubInternacional);
-		return codigo;
+		vuelosPublicos.put(nuevoVueloPubInternacional.getIdentificacion(), nuevoVueloPubInternacional);
+		vuelos.put(nuevoVueloPubInternacional.getIdentificacion(), nuevoVueloPubInternacional);
+		return nuevoVueloPubInternacional.getIdentificacion();
 	}
 
 	public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,
 			int dniComprador, int[] acompaniantes) {
-		int cantidadDeVuelos = vuelos.size();
 		//Calculamos jets necesarios y precio total.
 		int jets = Privado.calcularJetsNecesarios(acompaniantes);
 		double precioTotal = Privado.calcularPrecioFinal(jets,precio);
+		// Generamos codigo de vuelo.
+		String codigoPriv = Integer.toString(vuelos.size()) +1;
 		//Creamos vuelo
-		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precioTotal, jets, cantidadDeVuelos,
+		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precioTotal, jets,codigoPriv,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha);
 		//irep
 		boolean Posterior = nuevoVueloPrivado.esFechaPosterior(fecha);
@@ -96,11 +95,11 @@ public class Aerolinea implements IAerolinea {
 		if(!nuevoVueloPrivado.esUnVueloValido()) {
 			throw new RuntimeException("El vuelo privado no se puedo generar.");
 		}
-		// Generamos codigo de vuelo.
-		String codigoPriv = nuevoVueloPrivado.generarCodigoVuelo(cantidadDeVuelos);
+		
 		// Guardamos el nuevo vuelo.
-		vuelos.put(codigoPriv, nuevoVueloPrivado);
-		return codigoPriv;
+		vuelosPrivados.put(nuevoVueloPrivado.getIdentificacion(), nuevoVueloPrivado);
+		vuelos.put(nuevoVueloPrivado.getIdentificacion(), nuevoVueloPrivado);
+		return nuevoVueloPrivado.getIdentificacion();
 	}
 
 	public int venderPasaje(int dniCliente, String codVuelo, int nroAsiento, boolean aOcupar) {
@@ -147,7 +146,7 @@ public class Aerolinea implements IAerolinea {
 		double totalRecaudacion = 0.0;
 
 		// Recaudación de vuelos privados
-		for (Privado vuelo : vuelosPrivados.values()) {
+		for (Vuelo vuelo : vuelos.values()) {
 			if (vuelo.getAeropuertoDestino().getNombre().equals(destino)) {
 				double precioPorJet = vuelo.getPrecio();
 				int cantidadJets = vuelo.getCantidadJets();
@@ -182,21 +181,21 @@ public class Aerolinea implements IAerolinea {
 
 	public String detalleDeVuelo(String codVuelo) {
 		StringBuilder detalle = new StringBuilder();
-		Publico vueloNacional = vuelosPublicosNacional.get(codVuelo);
+		Publico vueloNacional = (Publico) vuelosPublicos.get(codVuelo);
 		if (vueloNacional != null) {
 			detalle.append(codVuelo).append(" - ").append(vueloNacional.getAeropuertoSalida().getNombre()).append(" - ")
 					.append(vueloNacional.getAeropuertoDestino().getNombre()).append(" - ")
 					.append(vueloNacional.getFecha()).append(" - NACIONAL");
 			return detalle.toString();
 		}
-		Publico vueloInternacional = vuelosPublicosInternacionales.get(codVuelo);
+		Publico vueloInternacional = (Publico) vuelosPublicos.get(codVuelo);
 		if (vueloInternacional != null) {
 			detalle.append(codVuelo).append(" - ").append(vueloInternacional.getAeropuertoSalida().getNombre())
 					.append(" - ").append(vueloInternacional.getAeropuertoDestino().getNombre()).append(" - ")
 					.append(vueloInternacional.getFecha()).append(" - INTERNACIONAL");
 			return detalle.toString();
 		}
-		Privado vueloPrivado = vuelosPrivados.get(codVuelo);
+		Privado vueloPrivado = (Privado) vuelosPrivados.get(codVuelo);
 		if (vueloPrivado != null) {
 			detalle.append(codVuelo).append(" - ").append(vueloPrivado.getAeropuertoSalida().getNombre()).append(" - ")
 					.append(vueloPrivado.getAeropuertoDestino().getNombre()).append(" - ")
