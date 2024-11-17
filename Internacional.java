@@ -7,7 +7,7 @@ public class Internacional extends Publico {
     private int cantidadRefrigerios;
     private double valorRefrigerio;
 
-    public Internacional (int cantidadRefrigerios, double valorRefrigerio, String [] escalas,String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int [] cantidadAsientos, int cantidadTripulantes, double[] precio) {
+    public Internacional (int cantidadRefrigerios, double valorRefrigerio, String [] escalas,int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha, int [] cantidadAsientos, int cantidadTripulantes, double[] precio) {
     	super( identificacion,  aeropuertoSalida,  aeropuertoDestino,  fecha,  cantidadAsientos,  cantidadTripulantes, precio);
     	this.cantidadRefrigerios= cantidadRefrigerios;
     	this.valorRefrigerio= valorRefrigerio;
@@ -19,18 +19,21 @@ public class Internacional extends Publico {
 		double costo= (super.valorPasaje(seccionAsiento)+refrigerio) * 0.20;//agregamos el %20 de impuertos
     	return costo;
     }
-    
+   
     public boolean tieneEscala(String [] escalas) {
     	if(escalas.length==0) {
     		return false;
     	}
     	return true;
     }
-    public boolean elVueloEsInternacional(HashMap<String, Aeropuerto> aeropuertos,String origen, String destino,int []cantAsientos, double [] precios) {
-		if (aeropuertos.get(destino).getPais().equals(aeropuertos.get(origen).getPais())) {
+    @Override
+    public boolean esUnVueloValido( ) {
+    	if(this.aeropuertoDestino.equals(null) || this.aeropuertoSalida.equals(null))
+			return false;
+		if (this.aeropuertoSalida.getPais().equals(this.getAeropuertoDestino().getPais())) {
 			return false;
 		}else {
-			 if (cantAsientos.length == 3 && precios.length == 3 ) {
+			if (this.cantidadAsientos.length == 3 && this.precio.length == 3 ) {
 					return true;
 			}else {
 				return false;

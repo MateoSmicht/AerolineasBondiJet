@@ -5,21 +5,31 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Vuelo {
-	protected String identificacion;
+	protected int identificacion;
 	protected Aeropuerto aeropuertoSalida;
     protected Aeropuerto aeropuertoDestino;
     protected String fecha;
     
     
-    public Vuelo(String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha) {
+    public Vuelo(int identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha) {
     	this.identificacion = identificacion;
     	this.aeropuertoSalida = aeropuertoSalida;
     	this.aeropuertoDestino = aeropuertoDestino;
     	this.fecha = fecha;
     }
     
+    public boolean esUnVueloValido(){
+    	if(this.aeropuertoDestino.equals(null) || this.aeropuertoSalida.equals(null)) {
+    		return false;
+    	}else {
+    		return true;
+    	}
+    }
+    public Vuelo crear() {
+    	return new Vuelo (this.identificacion, this.aeropuertoSalida, this.aeropuertoDestino, this.fecha);
+    }
  // Getters
-    public String getIdentificacion() {
+    public int getIdentificacion() {
         return identificacion;
     }
 
@@ -34,10 +44,8 @@ public class Vuelo {
     public String getFecha() {
         return fecha;
     }
-    public void setIdentificacion(String identificacion) {
-		this.identificacion = identificacion;
-	}
-    public static boolean esFechaPosterior(String fecha) {
+    
+    public boolean esFechaPosterior(String fecha) {
         try {
             // Define el formato de la fecha
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -70,6 +78,8 @@ public class Vuelo {
     public String toString() {
     	return "Id vuelo:" + this.identificacion + ", Origen:" + this.aeropuertoSalida + ", Destino:" + this.aeropuertoSalida + ", fecha:" + this.fecha;
     }
+
+	
     
    
 }
