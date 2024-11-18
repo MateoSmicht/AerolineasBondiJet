@@ -37,10 +37,10 @@ public class Privado extends Vuelo {
     	int seNecesita=(int) Math.ceil((double) cantidadAcompaniantes+1 / capacidad);
         return seNecesita;
     }
-	public static double calcularPrecioFinal (int cantidadJetsNecesarios,  double precio) {
+	public static double calcularPrecioFinal ( int cantidadJets,double precio) {
 		double precioJets = precio;
-		double total= (precioJets*cantidadJetsNecesarios);
-		return total * 0.30; //agregamos el %30 de impuertos
+		double total= (precioJets*cantidadJets);
+		return total*1.30 ; //agregamos el %30 de impuertos
 	}
 	  
 	   

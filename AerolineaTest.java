@@ -14,6 +14,7 @@ import org.junit.runners.MethodSorters;
 public class AerolineaTest {
 
 	private Aerolinea aerolinea;
+	private Internacional internacional;
 
 	@Before
 	public void setUp() {
@@ -209,7 +210,7 @@ public class AerolineaTest {
 	
 	    // Vender el vuelo privado
 	    String codVueloPrivado = aerolinea.VenderVueloPrivado("Aeroparque", "Bariloche", fechaVueloPrivado, 4, precioVueloPrivado, 98765432, acompaniantes);
-	
+	    System.out.print("PRIVADOOOOOOOOOOOO" +aerolinea.totalRecaudado("Bariloche") );
 	    assertEquals(recaudacionEsperada, aerolinea.totalRecaudado("Bariloche"), 0.1);
 	}
 	
@@ -234,6 +235,7 @@ public class AerolineaTest {
 	    // 140 pasajeros * 3 refrigerios * 2000 cada refrigerio 
 	    // y por ultimo sumo el 20 porciento de impuestos.
 	    double recaudacionEsperada=4488000.0;
+	    System.out.print("internacional_----> se espera:4488000 -> " +aerolinea.totalRecaudado("Barajas") );
 	    assertEquals(recaudacionEsperada, aerolinea.totalRecaudado("Barajas"), 0.1);
 	}
 	

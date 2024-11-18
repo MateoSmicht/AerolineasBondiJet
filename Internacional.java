@@ -16,7 +16,7 @@ public class Internacional extends Publico {
     @Override
 	public double valorPasaje(int seccionAsiento) {
     	double refrigerio=this.valorRefrigerio * this.cantidadRefrigerios;
-		double costo= (super.valorPasaje(seccionAsiento)+refrigerio) * 0.20;//agregamos el %20 de impuertos
+		double costo= (super.valorPasaje(seccionAsiento)+refrigerio) * 1.20;//agregamos el %20 de impuertos
     	return costo;
     }
    

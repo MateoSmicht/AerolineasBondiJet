@@ -83,9 +83,9 @@ public class Aerolinea implements IAerolinea {
 		int jets = Privado.calcularJetsNecesarios(acompaniantes);
 		double precioTotal = Privado.calcularPrecioFinal(jets,precio);
 		// Generamos codigo de vuelo.
-		String codigoPriv = Integer.toString(vuelos.size()) +1;
+		String codigoPriv = Integer.toString(vuelos.size()+1);
 		//Creamos vuelo
-		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precioTotal, jets,codigoPriv,
+		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precioTotal,jets ,codigoPriv,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha);
 		//irep
 		boolean Posterior = nuevoVueloPrivado.esFechaPosterior(fecha);
@@ -144,38 +144,23 @@ public class Aerolinea implements IAerolinea {
 
 	public double totalRecaudado(String destino) {
 		double totalRecaudacion = 0.0;
-
-		// Recaudación de vuelos privados
-		for (Vuelo vuelo : vuelos.values()) {
-			if (vuelo.getAeropuertoDestino().getNombre().equals(destino)) {
-				double precioPorJet = vuelo.getPrecio();
-				int cantidadJets = vuelo.getCantidadJets();
-				double recaudacionVuelo = cantidadJets * precioPorJet;
-				recaudacionVuelo += recaudacionVuelo * 0.30; // Aplicar 30% de impuestos
-				totalRecaudacion += recaudacionVuelo;
-			}
-		}
-
-		// Recaudación de vuelos internacionales
-		for (Internacional vuelo : vuelosPublicosInternacionales.values()) {
-			if (vuelo.getAeropuertoDestino().getNombre().equals(destino)) {
-				double recaudacionVuelo = 0.0;
-
-				// Sumar el costo de los asientos según la sección
-				for (int i = 0; i < vuelo.cantidadAsientos.length; i++) {
-					recaudacionVuelo += vuelo.cantidadAsientos[i] * vuelo.precio[i];
+		// Recaudacion de vuelos privados
+				for (Privado vueloPriv : vuelosPrivados.values()) {
+					if(vueloPriv.getAeropuertoDestino().getNombre().equals(destino)) {
+						totalRecaudacion = totalRecaudacion + vueloPriv.getPrecio();
+					}
 				}
-
-				// Sumar el costo de los refrigerios para todos los pasajeros
-				int totalPasajeros = Arrays.stream(vuelo.cantidadAsientos).sum();
-				recaudacionVuelo += totalPasajeros * vuelo.getCantidadRefrigerios() * vuelo.getValorRefrigerio();
-
-				// Aplicar 20% de impuestos
-				recaudacionVuelo += recaudacionVuelo * 0.20;
-				totalRecaudacion += recaudacionVuelo;
+		// Recaudación de vuelos publicos
+		for (Publico vuelo : vuelosPublicos.values()) {
+			if(vuelo.elVueloEsNacional(vuelo)) {
+				Nacional vueloNacional = (Nacional) vuelo;
+				totalRecaudacion = totalRecaudacion + vueloNacional.recaudacion_pasajes_a_destino(destino);
+			}else {
+				Internacional vueloInternacional = (Internacional) vuelo;
+				totalRecaudacion = totalRecaudacion + vueloInternacional.recaudacion_pasajes_a_destino(destino);
 			}
 		}
-
+		
 		return totalRecaudacion;
 	}
 

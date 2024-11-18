@@ -3,7 +3,9 @@ package bondiJet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,18 +26,21 @@ public class Publico extends Vuelo {
 
 	@Override
 	public boolean esUnVueloValido() {
-		if (this.aeropuertoDestino.equals(null)
-				|| this.aeropuertoSalida.equals(null)) {
+		if (this.aeropuertoDestino.equals(null) || this.aeropuertoSalida.equals(null)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	@Override
-	public Publico crear() {
-		return new Publico(this.identificacion, this.aeropuertoSalida, this.aeropuertoDestino, this.fecha,
-				this.cantidadAsientos, this.cantidadTripulantes, this.precio);
+	public double recaudacion_pasajes_a_destino(String destino) {
+		double recaudacion = 0.0;
+		if (this.getAeropuertoDestino().getNombre().equals(destino)) {
+			for (Pasaje pasaje : pasajes.values()) {
+				recaudacion=recaudacion+ this.valorPasaje(pasaje.getSeccionASiento());
+			}
+		}
+		return recaudacion;
 	}
 
 	public double valorPasaje(int seccionAsiento) {
@@ -142,7 +147,7 @@ public class Publico extends Vuelo {
 				DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
 		for (Vuelo vuelo : publicos.values()) {
-			if (!(vuelo.getIdentificacion()==(vueloComp.identificacion))
+			if (!(vuelo.getIdentificacion() == (vueloComp.identificacion))
 					&& vuelo.getAeropuertoSalida().getNombre().equals(vueloComp.getAeropuertoSalida().getNombre())
 					&& vuelo.getAeropuertoDestino().getNombre().equals(vueloComp.getAeropuertoDestino().getNombre())) {
 
