@@ -1,10 +1,9 @@
 package bondiJet;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,18 +12,26 @@ public class Aerolinea implements IAerolinea {
 	public String cuit;
 	public HashMap<String, Aeropuerto> aeropuertos;
 	private Map<Integer, Cliente> clientes;
-	private Map<String, Vuelo> vuelos; // Mapa para todos los vuelo
-	private Map<String , Privado> vuelosPrivados;
-	private Map<String , Publico> vuelosPublicos;
+	private Map<String, Vuelo> vuelos;
+	private Map<String, Privado> vuelosPrivados;
+	private Map<String, Publico> vuelosPublicos;
 
 	public Aerolinea(String nombreAerolinea, String cuit) {
+
 		this.nombreAerolinea = nombreAerolinea;
 		this.cuit = cuit;
+		if (this.nombreAerolinea.length() == 0 || this.cuit.length() == 0) {
+			throw new RuntimeException("Nombre o cuit son null");
+		}
 		this.aeropuertos = new HashMap<>();
 		this.clientes = new HashMap<>();
 		this.vuelos = new HashMap<>();
 		this.vuelosPrivados = new HashMap<>();
-		this.vuelosPublicos= new HashMap<>();
+		this.vuelosPublicos = new HashMap<>();
+		if (this.vuelosPrivados == null || this.vuelosPublicos == null || this.vuelos == null || this.clientes == null
+				|| this.aeropuertos == null) {
+			throw new RuntimeException("Una coleccion es null");
+		}
 	}
 
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -37,7 +44,6 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	public void registrarCliente(int dni, String nombre, String telefono) {
-
 		if (clientes.containsKey(dni)) {
 			throw new RuntimeException("El cliente ya esta cargado ");
 		} else {
@@ -48,14 +54,9 @@ public class Aerolinea implements IAerolinea {
 
 	public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, double[] precios, int[] cantAsientos) {
-		String cantidadDeVuelos = Integer.toString(vuelos.size()+1) ;
-		Nacional nuevoVueloNacional = new Nacional(valorRefrigerio,
-				cantidadDeVuelos, aeropuertos.get(origen),
+		String cantidadDeVuelos = Integer.toString(vuelos.size() + 1); // Genera el codigo del vuelo
+		Nacional nuevoVueloNacional = new Nacional(valorRefrigerio, cantidadDeVuelos, aeropuertos.get(origen),
 				aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
-		// Comprobamos si el vuelo es nacional
-		if (nuevoVueloNacional.esUnVueloValido() == false) {
-			throw new RuntimeException("El vuelo no es nacional");
-		}
 		// Almacenamos los vuelos en las tablas hash
 		vuelosPublicos.put(nuevoVueloNacional.getIdentificacion(), nuevoVueloNacional);
 		vuelos.put(nuevoVueloNacional.getIdentificacion(), nuevoVueloNacional);
@@ -64,13 +65,9 @@ public class Aerolinea implements IAerolinea {
 
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, int cantRefrigerios, double[] precios, int[] cantAsientos, String[] escalas) {
-		String codigo = Integer.toString(vuelos.size()+1)  ;
+		String codigo = Integer.toString(vuelos.size() + 1); // Genera el codigo del vuelo
 		Internacional nuevoVueloPubInternacional = new Internacional(cantRefrigerios, valorRefrigerio, escalas, codigo,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
-		// Comprobamos si el vuelo es nacional
-		if (nuevoVueloPubInternacional.esUnVueloValido() == false) {
-			throw new RuntimeException("El vuelo no es internacional");
-		}
 		// Generemos codigo de vuelo
 		vuelosPublicos.put(nuevoVueloPubInternacional.getIdentificacion(), nuevoVueloPubInternacional);
 		vuelos.put(nuevoVueloPubInternacional.getIdentificacion(), nuevoVueloPubInternacional);
@@ -79,23 +76,14 @@ public class Aerolinea implements IAerolinea {
 
 	public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,
 			int dniComprador, int[] acompaniantes) {
-		//Calculamos jets necesarios y precio total.
+		// Calculamos jets necesarios y precio total.
 		int jets = Privado.calcularJetsNecesarios(acompaniantes);
-		double precioTotal = Privado.calcularPrecioFinal(jets,precio);
 		// Generamos codigo de vuelo.
-		String codigoPriv = Integer.toString(vuelos.size()+1);
-		//Creamos vuelo
-		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precioTotal,jets ,codigoPriv,
+		String codigoPriv = Integer.toString(vuelos.size() + 1);
+		// Creamos vuelo
+		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, jets, codigoPriv,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha);
-		//irep
-		boolean Posterior = nuevoVueloPrivado.esFechaPosterior(fecha);
-		if (!Posterior) {
-			throw new RuntimeException("La fecha no es valida.");
-		}
-		if(!nuevoVueloPrivado.esUnVueloValido()) {
-			throw new RuntimeException("El vuelo privado no se puedo generar.");
-		}
-		
+
 		// Guardamos el nuevo vuelo.
 		vuelosPrivados.put(nuevoVueloPrivado.getIdentificacion(), nuevoVueloPrivado);
 		vuelos.put(nuevoVueloPrivado.getIdentificacion(), nuevoVueloPrivado);
@@ -119,93 +107,79 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	public List<String> consultarVuelosSimilares(String origen, String destino, String fecha) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate fechaConsulta = LocalDate.parse(fecha, formatter);
-		LocalDate fechaMaxima = fechaConsulta.plusDays(7);
-
 		List<String> vuelosSimilares = new ArrayList<>();
-
 		// Recorrer todos los vuelos
 		for (Vuelo vuelo : vuelos.values()) {
-			LocalDate fechaVuelo = LocalDate.parse(vuelo.getFecha(), formatter);
+			vuelosSimilares = vuelo.vueloSimilar(vuelo, fecha, origen, destino);
+		}
+		return vuelosSimilares;
+	}
 
-			// Verificar que el origen y destino coinciden, y que la fecha está dentro del
-			// rango
-			if (vuelo.getAeropuertoSalida().getNombre().equals(origen)
-					&& vuelo.getAeropuertoDestino().getNombre().equals(destino) && (fechaVuelo.isEqual(fechaConsulta)
-							|| (fechaVuelo.isAfter(fechaConsulta) && fechaVuelo.isBefore(fechaMaxima)))) {
-				
-				vuelosSimilares.add(vuelo.getIdentificacion());
+	public List<String> cancelarVuelo(String codVuelo) {
+		List<String> registros = new LinkedList<>();
+		Publico vueloCancelado = (Publico) vuelos.get(codVuelo);
+		List<Publico> vuelosSimilares = new ArrayList<>();
+		vuelosSimilares = vueloCancelado.vuelosSimelares_vueloCancelado(vuelosPublicos);
+		Publico vueloSimilar = vuelosSimilares.get(0);
+		registros = vueloCancelado.pasarPasajerosNuevoVuelo(vueloCancelado, vueloSimilar, vuelosPublicos);
+		Iterator<Publico> iterador = vuelosSimilares.iterator();
+		// Si el vuelo no logro reubicar a todos los pasajaeros, busca otro vuelo.
+		if (vueloCancelado.pasajes.size() != 0) {
+			while (iterador.hasNext()) {
+				Publico similar = iterador.next();
+				if (vueloCancelado.pasajes.size() != 0)
+					;
+				registros = vueloCancelado.pasarPasajerosNuevoVuelo(vueloCancelado, similar, vuelosPublicos);
 			}
 		}
-
-		return vuelosSimilares;
+		// elimina el vuelo
+		vuelos.remove(codVuelo);
+		return registros;
 	}
 
 	public double totalRecaudado(String destino) {
 		double totalRecaudacion = 0.0;
 		// Recaudacion de vuelos privados
-				for (Privado vueloPriv : vuelosPrivados.values()) {
-					if(vueloPriv.getAeropuertoDestino().getNombre().equals(destino)) {
-						totalRecaudacion = totalRecaudacion + vueloPriv.getPrecio();
-					}
-				}
+		for (Privado vueloPriv : vuelosPrivados.values()) {
+			if (vueloPriv.getAeropuertoDestino().getNombre().equals(destino)) {
+				totalRecaudacion = totalRecaudacion + vueloPriv.calcularPrecioFinal();
+			}
+		}
 		// Recaudación de vuelos publicos
 		for (Publico vuelo : vuelosPublicos.values()) {
-			if(vuelo.elVueloEsNacional(vuelo)) {
+			if (vuelo.elVueloEsNacional(vuelo)) {
 				Nacional vueloNacional = (Nacional) vuelo;
 				totalRecaudacion = totalRecaudacion + vueloNacional.recaudacion_pasajes_a_destino(destino);
-			}else {
+			} else {
 				Internacional vueloInternacional = (Internacional) vuelo;
 				totalRecaudacion = totalRecaudacion + vueloInternacional.recaudacion_pasajes_a_destino(destino);
 			}
 		}
-		
 		return totalRecaudacion;
 	}
 
 	public String detalleDeVuelo(String codVuelo) {
-		StringBuilder detalle = new StringBuilder();
-		Publico vueloNacional = (Publico) vuelosPublicos.get(codVuelo);
-		if (vueloNacional != null) {
-			detalle.append(codVuelo).append(" - ").append(vueloNacional.getAeropuertoSalida().getNombre()).append(" - ")
-					.append(vueloNacional.getAeropuertoDestino().getNombre()).append(" - ")
-					.append(vueloNacional.getFecha()).append(" - NACIONAL");
-			return detalle.toString();
-		}
-		Publico vueloInternacional = (Publico) vuelosPublicos.get(codVuelo);
-		if (vueloInternacional != null) {
-			detalle.append(codVuelo).append(" - ").append(vueloInternacional.getAeropuertoSalida().getNombre())
-					.append(" - ").append(vueloInternacional.getAeropuertoDestino().getNombre()).append(" - ")
-					.append(vueloInternacional.getFecha()).append(" - INTERNACIONAL");
-			return detalle.toString();
-		}
-		Privado vueloPrivado = (Privado) vuelosPrivados.get(codVuelo);
-		if (vueloPrivado != null) {
-			detalle.append(codVuelo).append(" - ").append(vueloPrivado.getAeropuertoSalida().getNombre()).append(" - ")
-					.append(vueloPrivado.getAeropuertoDestino().getNombre()).append(" - ")
-					.append(vueloPrivado.getFecha()).append(" - PRIVADO (").append(vueloPrivado.getCantidadJets())
-					.append(")");
-			return detalle.toString();
+		Vuelo vuelo = vuelos.get(codVuelo);
+		if (vuelo != null) {
+			return vuelo.generarDetalle();
 		}
 		throw new RuntimeException("Vuelo no encontrado para el código proporcionado: " + codVuelo);
 	}
 
-	public List<String> cancelarVuelo(String codVuelo) {
-		List<String> registros = new ArrayList<>();
-		Publico vueloCancelado = (Publico) vuelos.get(codVuelo);
-		Publico vueloAlternativo = (Publico) vueloCancelado.vueloAlternativoPublico(vueloCancelado, vuelos);
-		registros.add(vueloAlternativo.identificacion);
-		return registros;
-	}
-
 	public String toString() {
-		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit;
+		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit + "\nVuelos Publicos:" + this.vuelosPublicos
+				+ "\nVuelos Privados:" + this.vuelosPrivados + "\nClientes totales:" + this.clientes.size();
 	};
 
 	public void cancelarPasaje(int dni, String codigoVuelo, int codPasaje) {
 		Publico v = (Publico) vuelos.get(codigoVuelo);
-		v.cancelarPasajePublico(dni, codPasaje, v);
+		v.cancelarPasajePublico(dni, codPasaje, v);// Resuelto en O(1)
+	}
+
+	@Override
+	public void cancelarPasaje(int dni, int codPasaje) {
+		// TODO Auto-generated method stub
+
 	}
 
 }// end
