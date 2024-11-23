@@ -3,6 +3,7 @@ package bondiJet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,17 +30,17 @@ public abstract class Publico extends Vuelo {
 		}
 	}
 
-	protected double recaudacion_pasajes_a_destino(String destino) {
+	@Override
+	protected double totalRecaudado() {
 		double recaudacion = 0.0;
-		if (this.getAeropuertoDestino().getNombre().equals(destino)) {
-			for (Pasaje pasaje : pasajes.values()) {
-				recaudacion = recaudacion + this.valorPasaje(pasaje.getSeccionASiento());
-			}
+		for (Pasaje pasaje : pasajes.values()) {
+			recaudacion = recaudacion + this.precioVuelo(pasaje.getSeccionASiento());
 		}
 		return recaudacion;
 	}
 
-	protected double valorPasaje(int seccionAsiento) {
+	@Override
+	protected double precioVuelo(int seccionAsiento) {
 		double precioSeccion = precio[seccionAsiento]; // (ej. 0 para Turista, 1 para Ejecutiva)
 		return precioSeccion;
 	}
@@ -67,89 +68,38 @@ public abstract class Publico extends Vuelo {
 	}
 
 	@Override
-	protected boolean elVueloEsNacional(Vuelo v) {
-		Publico vuelo = (Publico) v;
-		if (vuelo.aeropuertoDestino.getPais().equals("Argentina")
-				&& vuelo.aeropuertoSalida.getPais().equals("Argentina")) {
-			if (vuelo.cantidadAsientos.length == 2 && vuelo.precio.length == 2) {
+	protected boolean elVueloEsNacional() {
+		if (this.aeropuertoDestino.getPais().equals("Argentina")
+				&& this.aeropuertoSalida.getPais().equals("Argentina")) {
+			if (this.cantidadAsientos.length == 2 && this.precio.length == 2) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	protected Map<Integer, String> asientosDisponiblesPublico(Vuelo v) {
-		Publico vuelo = (Publico) v;
-		// Genera mapa de asientos
-		Map<Integer, String> asientosDisponibles = new HashMap<>();
-		int asientoNumero = 0;
-		// NACIONAL
-		if (vuelo.elVueloEsNacional(vuelo)) {
-			// Añadir asientos de clase Turista
-			for (int i = 0; i < vuelo.cantidadAsientos[0]; i++) {
-				if (vuelo.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Turista");
-				}
-			}
-			// Añadir asientos de clase Ejecutiva
-			for (int i = 0; i < vuelo.cantidadAsientos[1]; i++) {
-				if (vuelo.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Ejecutiva");
-				}
-			}
-			// INTERNACIONAL
-		} else {
-			// Añadir asientos de clase Turista
-			for (int i = 0; i < vuelo.cantidadAsientos[0]; i++) {
-				if (vuelo.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Turista");
-				}
-			}
-
-			// Añadir asientos de clase Ejecutiva
-			for (int i = 0; i < vuelo.cantidadAsientos[1]; i++) {
-				if (vuelo.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Ejecutiva");
-				}
-			}
-			// Añadir asientos de primera clase
-			for (int i = 0; i < vuelo.cantidadAsientos[2]; i++) {
-				if (vuelo.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Primera clase");
-				}
-			}
-		}
-		return asientosDisponibles;
+	protected Map<Integer, String> asientosDisponibles() {
+		return null;
 	}
-
+	@Override
 	protected List<String> pasarPasajerosNuevoVuelo(Publico vueloAcancelar, Publico vueloAlternativo,
-			Map<String, Publico> vuelosPublicos) {
+			Map<String, Vuelo> vuelos) {
 		List<String> registros = new ArrayList<>();
-		Publico vueloCancelado = (Publico) vueloAcancelar;
 		// Recorre los pasajes de el vuelo a cancelar
-		for (Pasaje pasaje : vueloCancelado.pasajes.values()) {
+		for (Pasaje pasaje : vueloAcancelar.pasajes.values()) {
 			// manda a ubicar los pasajes del vuelo cancelado, al nuevo vuelo
-			registros.add(vueloCancelado.ubicarPasajeroNuevoVuelo(pasaje, vueloCancelado, vueloAlternativo));
+			registros.add(vueloAcancelar.ubicarPasajeroNuevoVuelo(pasaje, vueloAcancelar, vueloAlternativo));
 		}
 		return registros;
 	}
 
 	private String ubicarPasajeroNuevoVuelo(Pasaje pasajero, Publico cancelado, Publico nuevoVuelo) {
-		Map<Integer, String> asientosDisponibles = nuevoVuelo.asientosDisponiblesPublico(nuevoVuelo);
+		Map<Integer, String> asientosDisponibles = nuevoVuelo.asientosDisponibles();
 		String resultado = "";
 		int contador = 0; // Contador de asientos
-		// Si el asiento no esta ocupado vendemos un nuevo pasaje al vuelo nuevo.
+
 		if (!asientosDisponibles.get(pasajero.getAsientoAsignado()).equals("[OCUPADO]")) {
+			// Si el asiento no esta ocupado vendemos un nuevo pasaje al vuelo nuevo.
 			nuevoVuelo.venderPasajePublico(pasajero.getCliente(), nuevoVuelo, pasajero.getAsientoAsignado(),
 					pasajero.getOcupadoAsiento());
 			cancelado.pasajes.remove(pasajero.getAsientoAsignado());
@@ -158,15 +108,20 @@ public abstract class Publico extends Vuelo {
 					.generarInformacionCambioVuelo(nuevoVuelo.getIdentificacion());
 			// El asiento original del pasaje se encuentra ocupado.
 		} else {
-			for (String asiento : asientosDisponibles.values()) {// Recorre los asientos hasta encontrar uno que no este
-																	// ocupado.
+			Iterator<String> iterator = asientosDisponibles.values().iterator();
+			while (iterator.hasNext()) {
+				String asiento = iterator.next();
+			// Recorre los asientos hasta encontrar uno que no este ocupado
 				contador += 1;
 				if (contador > pasajero.getAsientoAsignado()) { // Recorre hasta superar el numero del asiento del
 																// pasaje.
 					if (!asiento.equals("[OCUPADO]")) {
+						// Si el asiento no esta ocupado vendemos un nuevo pasaje al vuelo nuevo.
 						nuevoVuelo.venderPasajePublico(pasajero.getCliente(), nuevoVuelo, contador,
 								pasajero.getOcupadoAsiento());
+						//eliminamos pasaje del vuelo cancelado
 						cancelado.pasajes.remove(pasajero.getAsientoAsignado());
+						//generamos mensaje informativo
 						resultado = nuevoVuelo.pasajes.get(contador)
 								.generarInformacionCambioVuelo(nuevoVuelo.getIdentificacion());
 					}
@@ -180,16 +135,18 @@ public abstract class Publico extends Vuelo {
 		}
 		return resultado;// Devuelve el mensaje informativo.
 	}
-
-	protected List<Publico> vuelosSimelares_vueloCancelado(Map<String, Publico> vuelosPublicos) {
+	@Override
+	protected List<Vuelo> vuelosSimelares_vueloCancelado(Map<String, Vuelo> vuelos) {
 		// Devuelve lista de vuelos similares.
-		List<Publico> vuelosSimilares = new ArrayList<>();
+		List<Vuelo> vuelosSimilares = new ArrayList<>();
 		// Recorrer todos los vuelos
-		for (Publico v : vuelosPublicos.values()) {
-			if (!v.getIdentificacion().equals(this.getIdentificacion()) && !v.equals(null)) {
-				if (v.aeropuertoDestino.getNombre().equals(this.getAeropuertoDestino().getNombre())
-						&& v.aeropuertoSalida.getNombre().equals(this.getAeropuertoSalida().getNombre())) {
-					vuelosSimilares.add(v);
+		Iterator<Vuelo> iterator = vuelos.values().iterator();
+		while (iterator.hasNext()) {
+			Vuelo vuelo =  iterator.next();
+			if (!vuelo.getIdentificacion().equals(this.getIdentificacion()) && !vuelo.equals(null)) {
+				if (vuelo.aeropuertoDestino.getNombre().equals(this.getAeropuertoDestino().getNombre())
+						&& vuelo.aeropuertoSalida.getNombre().equals(this.getAeropuertoSalida().getNombre())) {
+					vuelosSimilares.add(vuelo);
 				}
 			}
 		}
@@ -215,9 +172,9 @@ public abstract class Publico extends Vuelo {
 		return codigoPasaje;
 	}
 
-	protected void cancelarPasajePublico(int dni, int codigoPasaje, Vuelo v) {
-		Publico vuelo = (Publico) v;
-		if (vuelo.pasajes.get(codigoPasaje).getCliente().getDni() == dni) {
+	@Override
+	protected void cancelarPasajePublico(int dni, int codigoPasaje) {
+		if (this.pasajes.get(codigoPasaje).getCliente().getDni() == dni) {
 			pasajes.remove(codigoPasaje);
 		}
 	}

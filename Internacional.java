@@ -1,5 +1,8 @@
 package bondiJet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Internacional extends Publico {
 	private String[] escalas;
 	private int cantidadRefrigerios;
@@ -32,9 +35,9 @@ public class Internacional extends Publico {
 	}
 
 	@Override
-	protected double valorPasaje(int seccionAsiento) {
+	protected double precioVuelo(int seccionAsiento) {
 		double refrigerio = this.valorRefrigerio * this.cantidadRefrigerios;
-		double costo = (super.valorPasaje(seccionAsiento) + refrigerio) * 1.20;// agregamos el %20 de impuertos
+		double costo = (super.precioVuelo(seccionAsiento) + refrigerio) * 1.20;// agregamos el %20 de impuertos
 		return costo;
 	}
 
@@ -43,6 +46,40 @@ public class Internacional extends Publico {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected Map<Integer, String> asientosDisponibles() {
+		// Genera mapa de asientos
+		Map<Integer, String> asientosDisponibles = new HashMap<>();
+		int asientoNumero = 0;
+		// Añadir asientos de clase Turista
+		for (int i = 0; i < this.cantidadAsientos[0]; i++) {
+			if (this.pasajes.containsKey(i)) {
+				asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
+			} else {
+				asientosDisponibles.put(asientoNumero++, "Turista");
+			}
+		}
+
+		// Añadir asientos de clase Ejecutiva
+		for (int i = 0; i < this.cantidadAsientos[1]; i++) {
+			if (this.pasajes.containsKey(i)) {
+				asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
+			} else {
+				asientosDisponibles.put(asientoNumero++, "Ejecutiva");
+			}
+		}
+		// Añadir asientos de primera clase
+		for (int i = 0; i < this.cantidadAsientos[2]; i++) {
+			if (this.pasajes.containsKey(i)) {
+				asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
+			} else {
+				asientosDisponibles.put(asientoNumero++, "Primera clase");
+			}
+		}
+		return asientosDisponibles;
+
 	}
 
 	@Override

@@ -46,8 +46,12 @@ public class Privado extends Vuelo {
 		int seNecesita = (int) Math.ceil((double) cantidadAcompaniantes / capacidad);
 		return seNecesita;
 	}
-
-	protected double calcularPrecioFinal() {
+	@Override
+	protected double totalRecaudado() {
+			return precioVuelo(0);
+	}
+	@Override
+	protected double precioVuelo(int seccionAsiento) {
 		double total = (this.precio * this.cantidadJets) * 1.30;
 		return total; // agregamos el %30 de impuertos
 	}

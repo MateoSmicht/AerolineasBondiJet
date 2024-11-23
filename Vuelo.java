@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Vuelo {
 	protected String identificacion;
@@ -45,17 +46,7 @@ public abstract class Vuelo {
 		return vuelosSimilares;
 	}
 
-	protected boolean elVueloEsNacional(Vuelo v) {
-		Publico vuelo = (Publico) v;
-		if (vuelo.aeropuertoDestino.getPais().equals("Argentina")
-				&& vuelo.aeropuertoSalida.getPais().equals("Argentina")) {
-			if (vuelo.cantidadAsientos.length == 2 && vuelo.precio.length == 2) {
-				return true;
-			}
-		}
-		return false;
-	}
-
+	
 	protected boolean esFechaPosterior(String fecha) {
 		try {
 			// Define el formato de la fecha
@@ -82,7 +73,31 @@ public abstract class Vuelo {
 		String resultado = codigoVuelo.toString();
 		return resultado;
 	}
-
+	//Para aprovechar el polimorfismo
+	protected double precioVuelo(int seccionAsiento) {
+		return 0.0;
+	}
+	protected double totalRecaudado() {
+		return 0.0;
+	}
+	protected void cancelarPasajePublico(int dni, int codigoPasaje) {
+		}
+	protected boolean elVueloEsNacional() {
+		return false;
+	}
+	protected List<Vuelo> vuelosSimelares_vueloCancelado(Map<String, Vuelo> vuelos){
+		return null;
+	}
+	protected List<String> pasarPasajerosNuevoVuelo(Publico vueloAcancelar, Publico vueloAlternativo,
+			Map<String, Vuelo> vuelos){
+		return null;
+	}
+	
+	//Comprueba si un vuelo va al destino
+	protected boolean vaAlDestino(String destino) {
+		if (this.getAeropuertoDestino().getNombre().equals(destino));
+		return true;
+	}
 	// genera detalles de vuelo
 	protected String generarDetalle() {
 		StringBuilder detalle = new StringBuilder();
@@ -112,7 +127,7 @@ public abstract class Vuelo {
 	public String verDatos() {
 		return toString();
 	}
-
+	@Override
 	public String toString() {
 		return "<-([Identificacion])->:[" + this.identificacion + "]" + " Origen:" + this.aeropuertoSalida.getNombre()
 				+ " Destino: " + this.aeropuertoDestino.getNombre() + " Fecha: " + this.fecha;
