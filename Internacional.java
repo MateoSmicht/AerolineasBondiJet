@@ -115,13 +115,15 @@ public class Internacional extends Publico {
 
 	@Override
 	public String verDatos() {
-		return super.verDatos() + " Cantidad refrigerios:" + this.cantidadRefrigerios + " Valor refrigerio:"
-				+ this.valorRefrigerio;
+		return super.verDatos() + " [Precio turista]: " + this.precio[0] + " [Precio ejecutiva]: " + this.precio[1]
+				+ " [Precio primera clase]: " + this.precio[3] + " [refrigerios]: " + " [Cantidad refrigerios]: "
+				+ this.cantidadRefrigerios + " [Valor refrigerio]: " + this.valorRefrigerio+ "}\n";
 	}
 
 	@Override
 	public String toString() {
-		return " Cantidad refrigerios:" + this.cantidadRefrigerios + " Valor refrigerio:" + this.valorRefrigerio;
+		return super.toString() + " [Cantidad refrigerios]:" + this.cantidadRefrigerios + " [Valor refrigerio]:"
+				+ this.valorRefrigerio;
 
 	}
 }

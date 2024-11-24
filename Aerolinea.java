@@ -86,7 +86,7 @@ public class Aerolinea implements IAerolinea {
 		if (!clientes.containsKey(dniCliente)) {
 			throw new RuntimeException("El cliente no está registrado.");
 		}
-		Publico vuelo = (Publico) vuelos.get(codVuelo);
+		Publico vuelo = buscarVueloPublico(codVuelo);
 		// vende el pasaje
 		return vuelo.venderPasajePublico(clientes.get(dniCliente), vuelo, nroAsiento, aOcupar);
 	}
@@ -108,13 +108,14 @@ public class Aerolinea implements IAerolinea {
 
 	public List<String> cancelarVuelo(String codVuelo) {
 		List<String> registros = new LinkedList<>();
-		Publico vueloCancelado = (Publico) vuelos.get(codVuelo);
+		Publico vueloCancelado = buscarVueloPublico(codVuelo);
 		List<Vuelo> vuelosSimilares = new ArrayList<>();
 		vuelosSimilares = vueloCancelado.vuelosSimelares_vueloCancelado(vuelos);
-		Publico vueloSimilar = (Publico) vuelosSimilares.get(0);
+		Publico vueloSimilar = (Publico) vuelosSimilares.get(0); 
 		registros = vueloCancelado.pasarPasajerosNuevoVuelo(vueloCancelado, vueloSimilar, vuelos);
 		// elimina el vuelo
 		vuelos.remove(codVuelo);
+		vueloCancelado=null;
 		return registros;
 	}
 
@@ -131,10 +132,7 @@ public class Aerolinea implements IAerolinea {
 
 	public String detalleDeVuelo(String codVuelo) {
 		Vuelo vuelo = vuelos.get(codVuelo);
-		if (vuelo != null) {
 			return vuelo.generarDetalle();
-		}
-		throw new RuntimeException("Vuelo no encontrado para el código proporcionado: " + codVuelo);
 	}
 
 	@Override
@@ -154,6 +152,12 @@ public class Aerolinea implements IAerolinea {
 			vuelo.cancelarPasajePublico(dni, codPasaje);
 		}
 
+	}
+	//Metodo auxiliares
+	public Publico buscarVueloPublico(String codVuelo) {
+		if(vuelos.get(codVuelo).getClass().equals(Publico.class));
+			Publico vueloEncontrado= (Publico) vuelos.get(codVuelo);
+			return vueloEncontrado;
 	}
 
 }// end

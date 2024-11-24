@@ -24,28 +24,29 @@ public class Nacional extends Publico {
 		}
 		this.refrigerio = refrigerio;
 	}
+
 	@Override
 	protected Map<Integer, String> asientosDisponibles() {
 		// Genera mapa de asientos
 		Map<Integer, String> asientosDisponibles = new HashMap<>();
 		int asientoNumero = 0;
-		
+
 		// Añadir asientos de clase Turista
-			for (int i = 0; i < this.cantidadAsientos[0]; i++) {
-				if (this.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Turista");
-				}
+		for (int i = 0; i < this.cantidadAsientos[0]; i++) {
+			if (this.pasajes.containsKey(i)) {
+				asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
+			} else {
+				asientosDisponibles.put(asientoNumero++, "Turista");
 			}
-			// Añadir asientos de clase Ejecutiva
-			for (int i = 0; i < this.cantidadAsientos[1]; i++) {
-				if (this.pasajes.containsKey(i)) {
-					asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
-				} else {
-					asientosDisponibles.put(asientoNumero++, "Ejecutiva");
-				}
+		}
+		// Añadir asientos de clase Ejecutiva
+		for (int i = 0; i < this.cantidadAsientos[1]; i++) {
+			if (this.pasajes.containsKey(i)) {
+				asientosDisponibles.put(asientoNumero++, "[OCUPADO]");
+			} else {
+				asientosDisponibles.put(asientoNumero++, "Ejecutiva");
 			}
+		}
 		return asientosDisponibles;
 	}
 
@@ -75,12 +76,14 @@ public class Nacional extends Publico {
 
 	@Override
 	public String verDatos() {
-		return super.verDatos() + " refrigerios;" + this.refrigerio;
+		return super.verDatos() + " [Precio turista]: " + this.precio[0] + " [Precio ejecutiva]: " + this.precio[1]
+				+ " [refrigerios]: " + " [refrigerios]: " + this.refrigerio+"]\n";
 	}
 
 	@Override
 	public String toString() {
-		return "refrigerios;" + this.refrigerio;
+		return super.toString() + " [Precio turista]: " + this.precio[0] + " [Precio ejecutiva]: " + this.precio[1]
+				+ " [refrigerios]: " + this.refrigerio+ "}";
 	}
 
 	public double getRefrigerio() {

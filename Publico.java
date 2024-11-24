@@ -29,6 +29,7 @@ public abstract class Publico extends Vuelo {
 			throw new RuntimeException("Pasajes es null.");
 		}
 	}
+	
 
 	@Override
 	protected double totalRecaudado() {
@@ -135,7 +136,7 @@ public abstract class Publico extends Vuelo {
 		}
 		return resultado;// Devuelve el mensaje informativo.
 	}
-	@Override
+	
 	protected List<Vuelo> vuelosSimelares_vueloCancelado(Map<String, Vuelo> vuelos) {
 		// Devuelve lista de vuelos similares.
 		List<Vuelo> vuelosSimilares = new ArrayList<>();
@@ -153,8 +154,7 @@ public abstract class Publico extends Vuelo {
 		return vuelosSimilares;
 	}
 
-	protected int venderPasajePublico(Cliente cliente, Vuelo codVuelo, int nroAsiento, boolean ocupado) {
-		Publico vuelo = (Publico) codVuelo;
+	protected int venderPasajePublico(Cliente cliente, Publico vuelo, int nroAsiento, boolean ocupado) {
 		if (vuelo == null) {
 			throw new RuntimeException("Vuelo no encontrado.");
 		}
@@ -209,14 +209,12 @@ public abstract class Publico extends Vuelo {
 
 	@Override
 	public String verDatos() {
-		return super.verDatos() + "<-([Identificacion])->:[" + this.identificacion + "]" + " Origen:"
-				+ this.aeropuertoSalida.getNombre() + " Destino: " + this.aeropuertoDestino.getNombre() + " Fecha: "
-				+ this.fecha + " Precio: " + this.precio + " Tripulantes: " + this.cantidadTripulantes;
+		return super.verDatos() + " [Tripulantes]: " + this.cantidadTripulantes;
 	}
 
 	@Override
 	public String toString() {
-		return " Precio: " + this.precio;
+		return super.toString()+" [Tripulantes]: " + this.cantidadTripulantes;
 	}
 
 }

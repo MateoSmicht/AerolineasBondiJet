@@ -46,10 +46,12 @@ public class Privado extends Vuelo {
 		int seNecesita = (int) Math.ceil((double) cantidadAcompaniantes / capacidad);
 		return seNecesita;
 	}
+
 	@Override
 	protected double totalRecaudado() {
-			return precioVuelo(0);
+		return precioVuelo(0);
 	}
+
 	@Override
 	protected double precioVuelo(int seccionAsiento) {
 		double total = (this.precio * this.cantidadJets) * 1.30;
@@ -98,12 +100,13 @@ public class Privado extends Vuelo {
 
 	@Override
 	public String verDatos() {
-		return super.verDatos() + " Precio: " + this.precio + " Cantidad jets:" + this.cantidadJets;
+		return super.verDatos() + " [Precio]: " + this.precio + " [Cantidad jets]:" + this.cantidadJets + "}\n";
 	}
 
 	@Override
 	public String toString() {
-		return " Comprador: " + this.dniComprador + " Precio: " + this.precio + " Cantidad jets:" + this.cantidadJets;
+		return super.toString() + " Comprador: " + this.dniComprador + " Precio: " + this.precio + " Cantidad jets:"
+				+ this.cantidadJets;
 	}
 
 }

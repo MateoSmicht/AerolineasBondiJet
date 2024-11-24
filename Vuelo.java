@@ -65,6 +65,7 @@ public abstract class Vuelo {
 			return false;
 		}
 	}
+	
 
 	// Genera codigo de vuelo
 	protected String generarCodigoVuelo(String tamañoDeHashMapVuelos) {
@@ -85,9 +86,7 @@ public abstract class Vuelo {
 	protected boolean elVueloEsNacional() {
 		return false;
 	}
-	protected List<Vuelo> vuelosSimelares_vueloCancelado(Map<String, Vuelo> vuelos){
-		return null;
-	}
+	
 	protected List<String> pasarPasajerosNuevoVuelo(Publico vueloAcancelar, Publico vueloAlternativo,
 			Map<String, Vuelo> vuelos){
 		return null;
@@ -129,8 +128,8 @@ public abstract class Vuelo {
 	}
 	@Override
 	public String toString() {
-		return "<-([Identificacion])->:[" + this.identificacion + "]" + " Origen:" + this.aeropuertoSalida.getNombre()
-				+ " Destino: " + this.aeropuertoDestino.getNombre() + " Fecha: " + this.fecha;
+		return "{<-(["+this.identificacion+"])->:["  + "]" + " [Origen] :" + this.aeropuertoSalida.getNombre()
+				+ " [Destino]: " + this.aeropuertoDestino.getNombre() + " [Fecha]: " + this.fecha;
 	}
 
 }
