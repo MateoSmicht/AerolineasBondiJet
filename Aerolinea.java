@@ -17,6 +17,7 @@ public class Aerolinea implements IAerolinea {
 
 		this.nombreAerolinea = nombreAerolinea;
 		this.cuit = cuit;
+		//IREP
 		if (this.nombreAerolinea.length() == 0 || this.cuit.length() == 0) {
 			throw new RuntimeException("Nombre o cuit son null");
 		}
@@ -30,8 +31,9 @@ public class Aerolinea implements IAerolinea {
 
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
 		if (aeropuertos.containsKey(nombreAeropuerto)) {
-			throw new RuntimeException("El aeropuerto ya existe en el sistema ");
+			throw new RuntimeException("El aeropuerto ya existe en el sistema "); //irep
 		} else {
+			//Crea el nuevl aeropuerto
 			Aeropuerto aeropuertoNuevo = new Aeropuerto(nombreAeropuerto, pais, provincia, direccion);
 			aeropuertos.put(nombreAeropuerto, aeropuertoNuevo);
 		}
@@ -39,8 +41,9 @@ public class Aerolinea implements IAerolinea {
 
 	public void registrarCliente(int dni, String nombre, String telefono) {
 		if (clientes.containsKey(dni)) {
-			throw new RuntimeException("El cliente ya esta cargado ");
+			throw new RuntimeException("El cliente ya esta cargado "); //irep
 		} else {
+			//Crea el nuevo clientes.
 			Cliente clienteNuevo = new Cliente(dni, nombre, telefono);
 			clientes.put(dni, clienteNuevo);
 		}
@@ -49,6 +52,10 @@ public class Aerolinea implements IAerolinea {
 	public String registrarVueloPublicoNacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, double[] precios, int[] cantAsientos) {
 		String cantidadDeVuelos = Integer.toString(vuelos.size() + 1); // Genera el codigo del vuelo
+		if (vuelos.containsKey(cantidadDeVuelos)) {
+			throw new RuntimeException("El vuelo nacional ya esta cargado ");
+		}
+		//creamos vuelo nacional.
 		Nacional nuevoVueloNacional = new Nacional(valorRefrigerio, cantidadDeVuelos, aeropuertos.get(origen),
 				aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
 		// Almacenamos los vuelos en las tablas hash
@@ -59,6 +66,10 @@ public class Aerolinea implements IAerolinea {
 	public String registrarVueloPublicoInternacional(String origen, String destino, String fecha, int tripulantes,
 			double valorRefrigerio, int cantRefrigerios, double[] precios, int[] cantAsientos, String[] escalas) {
 		String codigo = Integer.toString(vuelos.size() + 1); // Genera el codigo del vuelo
+		if (vuelos.containsKey(codigo)) {
+			throw new RuntimeException("El vuelo internacional ya esta cargado ");
+		}
+		//creamos vuelo internacional
 		Internacional nuevoVueloPubInternacional = new Internacional(cantRefrigerios, valorRefrigerio, escalas, codigo,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
 		// Generemos codigo de vuelo
@@ -72,6 +83,9 @@ public class Aerolinea implements IAerolinea {
 		int jets = Privado.calcularJetsNecesarios(acompaniantes);
 		// Generamos codigo de vuelo.
 		String codigoPriv = Integer.toString(vuelos.size() + 1);
+		if (vuelos.containsKey(codigoPriv)) {
+			throw new RuntimeException("El vuelo privado ya esta cargado ");
+		}
 		// Creamos vuelo
 		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, jets, codigoPriv,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha);
@@ -107,11 +121,12 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	public List<String> cancelarVuelo(String codVuelo) {
-		List<String> registros = new LinkedList<>();
+		//Registro del estado de los pasajes
+		List<String> registros = new LinkedList<>(); 
+		//Vuelos
 		Publico vueloCancelado = buscarVueloPublico(codVuelo);
-		List<Vuelo> vuelosSimilares = new ArrayList<>();
-		vuelosSimilares = vueloCancelado.vuelosSimelares_vueloCancelado(vuelos);
-		Publico vueloSimilar = (Publico) vuelosSimilares.get(0); 
+		Publico vueloSimilar = (Publico) vueloCancelado.vueloSimilar_vueloCancelado(vuelos);
+		//Pasa los pasajeros al nuevo vuelo.
 		registros = vueloCancelado.pasarPasajerosNuevoVuelo(vueloCancelado, vueloSimilar, vuelos);
 		// elimina el vuelo
 		vuelos.remove(codVuelo);

@@ -1,5 +1,7 @@
 package bondiJet;
 
+import java.util.Objects;
+
 public class Pasaje {
 	private int asientoAsignado;
 	private Vuelo vueloAsignado;
@@ -26,6 +28,21 @@ public class Pasaje {
 				.append(cliente.getTelefono() + " - ").append(codigoVuelo);
 		String resultadoInformacion = informacionPasaje.toString();
 		return resultadoInformacion;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(asientoAsignado, cliente, ocupadoAsiento, seccionAsiento, vueloAsignado);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Pasaje) {
+			Pasaje other = (Pasaje) obj;
+			return (this.asientoAsignado == other.getAsientoAsignado() && this.cliente.equals(other.getCliente())
+					&& this.seccionAsiento == other.getSeccionASiento()
+					&& this.vueloAsignado == other.getVueloAsignado());
+		}
+		return false;
 	}
 
 	// Getters

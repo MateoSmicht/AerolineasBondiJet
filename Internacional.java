@@ -1,7 +1,9 @@
 package bondiJet;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Internacional extends Publico {
 	private String[] escalas;
@@ -81,15 +83,27 @@ public class Internacional extends Publico {
 		return asientosDisponibles;
 
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(escalas);
+		result = prime * result + Objects.hash(cantidadRefrigerios, valorRefrigerio);
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Internacional) {
-			Internacional other = (Internacional) obj;
-			return (this.cantidadRefrigerios == other.getCantidadRefrigerios()
-					&& this.valorRefrigerio == other.getValorRefrigerio() && this.escalas == other.getEscalas());
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Internacional other = (Internacional) obj;
+		return cantidadRefrigerios == other.cantidadRefrigerios && Arrays.equals(escalas, other.escalas)
+				&& Double.doubleToLongBits(valorRefrigerio) == Double.doubleToLongBits(other.valorRefrigerio);
 	}
 
 	public int getCantidadRefrigerios() {

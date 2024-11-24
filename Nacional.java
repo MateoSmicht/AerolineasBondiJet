@@ -2,6 +2,7 @@ package bondiJet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Nacional extends Publico {
 	private double refrigerio;
@@ -55,14 +56,24 @@ public class Nacional extends Publico {
 		double costo = (super.precioVuelo(seccionAsiento) + this.refrigerio) * 0.20; // agregamos el %20 de impuertos
 		return costo;
 	}
-
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(refrigerio);
+		return result;
+	}
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Nacional) {
-			Nacional other = (Nacional) obj;
-			return (this.refrigerio == other.getRefrigerio());
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Nacional other = (Nacional) obj;
+		return Double.doubleToLongBits(refrigerio) == Double.doubleToLongBits(other.refrigerio);
 	}
 
 	// genera detalles de vuelo

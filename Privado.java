@@ -1,5 +1,8 @@
 package bondiJet;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Privado extends Vuelo {
 	private int dniComprador;
 	private int[] acompaniantes;
@@ -57,16 +60,29 @@ public class Privado extends Vuelo {
 		double total = (this.precio * this.cantidadJets) * 1.30;
 		return total; // agregamos el %30 de impuertos
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(acompaniantes);
+		result = prime * result + Objects.hash(cantidadJets, dniComprador, precio, tripulantes);
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Privado) {
-			Privado other = (Privado) obj;
-			return (this.dniComprador == other.getDniComprador() && this.acompaniantes == other.getAcompaniantes()
-					&& this.precio == other.getPrecio() && this.tripulantes == other.getTripulantes()
-					&& this.cantidadJets == other.getCantidadJets());
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Privado other = (Privado) obj;
+		return Arrays.equals(acompaniantes, other.acompaniantes) && cantidadJets == other.cantidadJets
+				&& dniComprador == other.dniComprador
+				&& Double.doubleToLongBits(precio) == Double.doubleToLongBits(other.precio)
+				&& tripulantes == other.tripulantes;
 	}
 
 	public int getDniComprador() {

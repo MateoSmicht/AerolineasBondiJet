@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class Vuelo {
 	protected String identificacion;
@@ -28,7 +29,7 @@ public abstract class Vuelo {
 		}
 		this.fecha = fecha;
 	}
-
+	
 	protected List<String> vueloSimilar(Vuelo vuelo, String fecha, String origen, String destino) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate fechaConsulta = LocalDate.parse(fecha, formatter);
@@ -131,5 +132,25 @@ public abstract class Vuelo {
 		return "{<-(["+this.identificacion+"])->:["  + "]" + " [Origen] :" + this.aeropuertoSalida.getNombre()
 				+ " [Destino]: " + this.aeropuertoDestino.getNombre() + " [Fecha]: " + this.fecha;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(aeropuertoDestino, aeropuertoSalida, fecha, identificacion);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vuelo other = (Vuelo) obj;
+		return Objects.equals(aeropuertoDestino, other.aeropuertoDestino)
+				&& Objects.equals(aeropuertoSalida, other.aeropuertoSalida) && Objects.equals(fecha, other.fecha)
+				&& Objects.equals(identificacion, other.identificacion);
+	}
+	
 
 }

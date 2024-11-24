@@ -137,9 +137,9 @@ public abstract class Publico extends Vuelo {
 		return resultado;// Devuelve el mensaje informativo.
 	}
 	
-	protected List<Vuelo> vuelosSimelares_vueloCancelado(Map<String, Vuelo> vuelos) {
+	protected Vuelo vueloSimilar_vueloCancelado(Map<String, Vuelo> vuelos) {
 		// Devuelve lista de vuelos similares.
-		List<Vuelo> vuelosSimilares = new ArrayList<>();
+		Vuelo vueloSimilar = null;
 		// Recorrer todos los vuelos
 		Iterator<Vuelo> iterator = vuelos.values().iterator();
 		while (iterator.hasNext()) {
@@ -147,11 +147,13 @@ public abstract class Publico extends Vuelo {
 			if (!vuelo.getIdentificacion().equals(this.getIdentificacion()) && !vuelo.equals(null)) {
 				if (vuelo.aeropuertoDestino.getNombre().equals(this.getAeropuertoDestino().getNombre())
 						&& vuelo.aeropuertoSalida.getNombre().equals(this.getAeropuertoSalida().getNombre())) {
-					vuelosSimilares.add(vuelo);
+					vueloSimilar=vuelo;
+					return vuelo;
 				}
 			}
 		}
-		return vuelosSimilares;
+		return vueloSimilar;
+		
 	}
 
 	protected int venderPasajePublico(Cliente cliente, Publico vuelo, int nroAsiento, boolean ocupado) {
@@ -178,12 +180,24 @@ public abstract class Publico extends Vuelo {
 			pasajes.remove(codigoPasaje);
 		}
 	}
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(cantidadAsientos);
+		result = prime * result + Arrays.hashCode(precio);
+		result = prime * result + Objects.hash(cantidadTripulantes, pasajes);
+		return result;
+	}
+
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
