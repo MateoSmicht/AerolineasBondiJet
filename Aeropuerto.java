@@ -44,8 +44,8 @@ public class Aeropuerto {
 
 	@Override
 	public String toString() {
-		return "Aeropuerto [nombre=" + nombre + ", pais=" + pais + ", provincia=" + provincia + ", direccion="
-				+ direccion + "]";
+		return "<-Nombre Aeropuerto [" + " pais=" + pais + ", provincia=" + provincia + ", direccion="
+				+ direccion + "]\n";
 	}
 
 	public String getNombre() {

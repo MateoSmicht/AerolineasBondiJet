@@ -17,7 +17,7 @@ public class Aerolinea implements IAerolinea {
 
 		this.nombreAerolinea = nombreAerolinea;
 		this.cuit = cuit;
-		//IREP
+		// IREP
 		if (this.nombreAerolinea.length() == 0 || this.cuit.length() == 0) {
 			throw new RuntimeException("Nombre o cuit son null");
 		}
@@ -31,9 +31,9 @@ public class Aerolinea implements IAerolinea {
 
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
 		if (aeropuertos.containsKey(nombreAeropuerto)) {
-			throw new RuntimeException("El aeropuerto ya existe en el sistema "); //irep
+			throw new RuntimeException("El aeropuerto ya existe en el sistema "); // irep
 		} else {
-			//Crea el nuevl aeropuerto
+			// Crea el nuevl aeropuerto
 			Aeropuerto aeropuertoNuevo = new Aeropuerto(nombreAeropuerto, pais, provincia, direccion);
 			aeropuertos.put(nombreAeropuerto, aeropuertoNuevo);
 		}
@@ -41,9 +41,9 @@ public class Aerolinea implements IAerolinea {
 
 	public void registrarCliente(int dni, String nombre, String telefono) {
 		if (clientes.containsKey(dni)) {
-			throw new RuntimeException("El cliente ya esta cargado "); //irep
+			throw new RuntimeException("El cliente ya esta cargado "); // irep
 		} else {
-			//Crea el nuevo clientes.
+			// Crea el nuevo clientes.
 			Cliente clienteNuevo = new Cliente(dni, nombre, telefono);
 			clientes.put(dni, clienteNuevo);
 		}
@@ -55,7 +55,7 @@ public class Aerolinea implements IAerolinea {
 		if (vuelos.containsKey(cantidadDeVuelos)) {
 			throw new RuntimeException("El vuelo nacional ya esta cargado ");
 		}
-		//creamos vuelo nacional.
+		// creamos vuelo nacional.
 		Nacional nuevoVueloNacional = new Nacional(valorRefrigerio, cantidadDeVuelos, aeropuertos.get(origen),
 				aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
 		// Almacenamos los vuelos en las tablas hash
@@ -69,7 +69,7 @@ public class Aerolinea implements IAerolinea {
 		if (vuelos.containsKey(codigo)) {
 			throw new RuntimeException("El vuelo internacional ya esta cargado ");
 		}
-		//creamos vuelo internacional
+		// creamos vuelo internacional
 		Internacional nuevoVueloPubInternacional = new Internacional(cantRefrigerios, valorRefrigerio, escalas, codigo,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha, cantAsientos, tripulantes, precios);
 		// Generemos codigo de vuelo
@@ -121,16 +121,16 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	public List<String> cancelarVuelo(String codVuelo) {
-		//Registro del estado de los pasajes
-		List<String> registros = new LinkedList<>(); 
-		//Vuelos
+		// Registro del estado de los pasajes
+		List<String> registros = new LinkedList<>();
+		// Vuelos
 		Publico vueloCancelado = buscarVueloPublico(codVuelo);
 		Publico vueloSimilar = (Publico) vueloCancelado.vueloSimilar_vueloCancelado(vuelos);
-		//Pasa los pasajeros al nuevo vuelo.
+		// Pasa los pasajeros al nuevo vuelo.
 		registros = vueloCancelado.pasarPasajerosNuevoVuelo(vueloCancelado, vueloSimilar, vuelos);
 		// elimina el vuelo
 		vuelos.remove(codVuelo);
-		vueloCancelado=null;
+		vueloCancelado = null;
 		return registros;
 	}
 
@@ -147,13 +147,14 @@ public class Aerolinea implements IAerolinea {
 
 	public String detalleDeVuelo(String codVuelo) {
 		Vuelo vuelo = vuelos.get(codVuelo);
-			return vuelo.generarDetalle();
+		return vuelo.generarDetalle();
 	}
 
 	@Override
 	public String toString() {
 		return "Aerolínea: " + this.nombreAerolinea + "\nCUIT: " + cuit + "\nVuelos :" + this.vuelos
-				+ "\nClientes totales:" + this.clientes.size() + "\nTotal de Vuelos :" + this.vuelos.size();
+				+ "\nClientes totales:" +this.clientes.size()+ "\nDetalles clientes :" + this.clientes 
+				+ "\nTotal de Vuelos :" + this.vuelos.size() + "\nAeropuertos :" + this.aeropuertos;
 	};
 
 	public void cancelarPasaje(int dni, String codigoVuelo, int codPasaje) {
@@ -168,11 +169,13 @@ public class Aerolinea implements IAerolinea {
 		}
 
 	}
-	//Metodo auxiliares
+
+	// Metodo auxiliares
 	public Publico buscarVueloPublico(String codVuelo) {
-		if(vuelos.get(codVuelo).getClass().equals(Publico.class));
-			Publico vueloEncontrado= (Publico) vuelos.get(codVuelo);
-			return vueloEncontrado;
+		if (vuelos.get(codVuelo).getClass().equals(Publico.class))
+			;
+		Publico vueloEncontrado = (Publico) vuelos.get(codVuelo);
+		return vueloEncontrado;
 	}
 
 }// end

@@ -56,7 +56,7 @@ public class Cliente {
 
 	@Override
 	public String toString() {
-		return "Cliente [dni=" + dni + ", nombre=" + nombre + ", telefeno=" + telefeno + "]";
+		return "Dni Cliente ["+ "nombre=" + nombre + ", telefeno=" + telefeno + "]  ";
 	}
 
 }
