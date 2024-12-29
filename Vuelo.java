@@ -57,10 +57,10 @@ public abstract class Vuelo {
 			LocalDate fechaDada = LocalDate.parse(fecha, formatter);
 
 			// Obtén la fecha actual
-			LocalDate fechaActual = LocalDate.now();
-
+			LocalDate fechaVuelo = LocalDate.now();
+			//LocalDate fechaSieteDias= fechaVuelo.plusDays(7); //fecha dentro de 7 dias
 			// Compara las fechas
-			return fechaDada.isAfter(fechaActual);
+			return fechaDada.isAfter(fechaVuelo ); //&& fechaSieteDias.isBefore(fechaSieteDias);
 		} catch (DateTimeParseException e) {
 			System.out.println("Formato de fecha inválido: " + fecha);
 			return false;
