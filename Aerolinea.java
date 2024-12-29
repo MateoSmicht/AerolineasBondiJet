@@ -24,9 +24,7 @@ public class Aerolinea implements IAerolinea {
 		this.aeropuertos = new HashMap<>();
 		this.clientes = new HashMap<>();
 		this.vuelos = new HashMap<>();
-		if (this.vuelos == null || this.clientes == null || this.aeropuertos == null) {
-			throw new RuntimeException("Una coleccion es null");
-		}
+		
 	}
 
 	public void registrarAeropuerto(String nombreAeropuerto, String pais, String provincia, String direccion) {
@@ -79,15 +77,11 @@ public class Aerolinea implements IAerolinea {
 
 	public String VenderVueloPrivado(String origen, String destino, String fecha, int tripulantes, double precio,
 			int dniComprador, int[] acompaniantes) {
-		// Calculamos jets necesarios y precio total.
-		int jets = Privado.calcularJetsNecesarios(acompaniantes);
 		// Generamos codigo de vuelo.
 		String codigoPriv = Integer.toString(vuelos.size() + 1);
-		if (vuelos.containsKey(codigoPriv)) {
-			throw new RuntimeException("El vuelo privado ya esta cargado ");
-		}
+		
 		// Creamos vuelo
-		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, jets, codigoPriv,
+		Privado nuevoVueloPrivado = new Privado(dniComprador, acompaniantes, tripulantes, precio, codigoPriv,
 				aeropuertos.get(origen), aeropuertos.get(destino), fecha);
 
 		// Guardamos el nuevo vuelo.
@@ -96,13 +90,9 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	public int venderPasaje(int dniCliente, String codVuelo, int nroAsiento, boolean aOcupar) {
-		// Verificar si el cliente está registrado
-		if (!clientes.containsKey(dniCliente)) {
-			throw new RuntimeException("El cliente no está registrado.");
-		}
 		Publico vuelo = buscarVueloPublico(codVuelo);
 		// vende el pasaje
-		return vuelo.venderPasajePublico(clientes.get(dniCliente), vuelo, nroAsiento, aOcupar);
+		return vuelo.venderPasajePublico(buscarCliente(dniCliente), vuelo, nroAsiento, aOcupar);
 	}
 
 	public Map<Integer, String> asientosDisponibles(String codVuelo) {
@@ -171,11 +161,26 @@ public class Aerolinea implements IAerolinea {
 	}
 
 	// Metodo auxiliares
-	public Publico buscarVueloPublico(String codVuelo) {
-		if (vuelos.get(codVuelo).getClass().equals(Publico.class))
-			;
-		Publico vueloEncontrado = (Publico) vuelos.get(codVuelo);
+	private Vuelo buscarVuelo(String codVuelo) {
+;		if (!(vuelos.containsKey(codVuelo))) {
+			throw new RuntimeException("el vuelo no existe");
+		}
+		return vuelos.get(codVuelo);
+	}
+	private Publico buscarVueloPublico(String codVuelo) {
+		Vuelo vuelo =buscarVuelo(codVuelo);
+		if (!(vuelo instanceof Publico)) {
+			throw new RuntimeException("no es vuelo publico");
+		}
+		Publico vueloEncontrado = (Publico) vuelo;
 		return vueloEncontrado;
 	}
-
+	
+	//BUSCARCLIENTE
+	private Cliente buscarCliente(int dni) {
+		if (clientes.get(dni)== null || !clientes.containsKey(dni)) {
+			throw new RuntimeException("El cliente no existe");
+		}
+		return clientes.get(dni);
+	}
 }// end

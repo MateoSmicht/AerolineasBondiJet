@@ -10,7 +10,7 @@ public class Privado extends Vuelo {
 	private double precio;
 	private int cantidadJets;
 
-	public Privado(int dniComprador, int[] acompaniantes, int tripulantes, double precio, int cantidadJets,
+	public Privado(int dniComprador, int[] acompaniantes, int tripulantes, double precio,
 			String identificacion, Aeropuerto aeropuertoSalida, Aeropuerto aeropuertoDestino, String fecha) {
 		super(identificacion, aeropuertoSalida, aeropuertoDestino, fecha);
 		if (this.identificacion == null) {
@@ -29,7 +29,8 @@ public class Privado extends Vuelo {
 			throw new RuntimeException("Precio negativo");
 		}
 		this.precio = precio;
-		this.cantidadJets = cantidadJets;
+		
+		this.cantidadJets = Privado.calcularJetsNecesarios(acompaniantes);
 		if (this.cantidadJets < 0) {
 			throw new RuntimeException("no hay jets");
 		}
